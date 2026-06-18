@@ -22,9 +22,6 @@ Group Leader
 
 M.F.M. Afham 
 
-Project ID 
-
-To be assigned by the department 
 
  
 
