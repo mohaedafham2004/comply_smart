@@ -303,11 +303,5 @@ LKR 0 – LKR 5,000
 7. [Visual Studio Code Documentation](https://code.visualstudio.com/docs?utm_source=chatgpt.com)
 
 ---
+![Uploading TCC.png…]()
 
-# 14. Signatures
-
-Group Leader: M.F.M. Afham
-
------------------------------
-
-Date: 19/06/2026
