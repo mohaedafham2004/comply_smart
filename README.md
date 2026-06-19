@@ -303,5 +303,6 @@ LKR 0 – LKR 5,000
 7. [Visual Studio Code Documentation](https://code.visualstudio.com/docs?utm_source=chatgpt.com)
 
 ---
-![Uploading TCC.png…]()
+<img width="1536" height="1024" alt="TCC" src="https://github.com/user-attachments/assets/9dbaa942-2d3a-46e9-8648-d076e1c2a146" />
+
 
