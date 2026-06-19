@@ -1,10 +1,5 @@
 # Proposal: CCS3361 – TCC
 
-## Project ID
-
-(To be assigned by the department)
-
----
 
 # 01. Software Service or Product Development
 
