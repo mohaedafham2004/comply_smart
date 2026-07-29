@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Profile | ComplySmart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .compliance-ring {
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#1b1b1d",
+                      "surface-tint": "#565e74",
+                      "surface-variant": "#e4e2e4",
+                      "surface-container-highest": "#e4e2e4",
+                      "surface-bright": "#fcf8fa",
+                      "primary-fixed-dim": "#bec6e0",
+                      "surface-container": "#f0edef",
+                      "on-background": "#1b1b1d",
+                      "on-tertiary-fixed-variant": "#574425",
+                      "inverse-primary": "#bec6e0",
+                      "primary-container": "#131b2e",
+                      "on-primary-container": "#7c839b",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary": "#000000",
+                      "on-primary-fixed": "#131b2e",
+                      "tertiary-fixed-dim": "#dec29a",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "on-surface-variant": "#45464d",
+                      "outline-variant": "#c6c6cd",
+                      "secondary-container": "#316bf3",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-container": "#98805d",
+                      "on-secondary-fixed": "#00174b",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "surface-dim": "#dcd9db",
+                      "on-secondary-container": "#fefcff",
+                      "on-tertiary-fixed": "#271901",
+                      "inverse-surface": "#303032",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "background": "#fcf8fa",
+                      "outline": "#76777d",
+                      "surface": "#fcf8fa",
+                      "tertiary-fixed": "#fcdeb5",
+                      "tertiary": "#000000",
+                      "surface-container-high": "#eae7e9",
+                      "surface-container-low": "#f6f3f5",
+                      "secondary": "#0051d5",
+                      "secondary-fixed": "#dbe1ff",
+                      "inverse-on-surface": "#f3f0f2",
+                      "primary-fixed": "#dae2fd",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#271901",
+                      "on-error-container": "#93000a",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "sm": "16px",
+                      "xl": "64px",
+                      "md": "24px",
+                      "base": "4px",
+                      "container-max": "1440px",
+                      "lg": "40px",
+                      "sidebar-width": "260px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Hanken Grotesk"],
+                      "body-md": ["Inter"],
+                      "display": ["Hanken Grotesk"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "metadata": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "metadata": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md overflow-x-hidden">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 w-full flex justify-between items-center px-md py-xs bg-surface-lowest border-b border-outline-variant z-50 h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+                ComplySmart
+            </span>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center bg-surface-container-low px-sm py-1 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64" placeholder="Search compliance data..." type="text"/>
+</div>
+<div class="flex items-center gap-sm text-secondary">
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional high-resolution headshot of a business executive in a modern, brightly lit office environment. The person is wearing a navy blazer and has a friendly, confident expression. The lighting is soft and high-key, reflecting a high-trust, legal-tech brand aesthetic with clean white backgrounds." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBHzaapGmnnMUTMmUThIbAGzAEIDorg-VoGpUPEPQL00Xc1DZW1maFRAyHhob0GCcaVmIWSBjI9QC6io0iSBEVrn0_MU6ol_gYCIWHKFxZlusLq1et-7kExgr7FxiDL1c6Qqq37nL1lkyMYvmulNhRtCVatTxcYP_18vMif_pZcUE_zHKvz-W_mKt9SnNLRjlX_4PCN-I686f2aVNlxgI4IYcuZ07m_pVjtb5FKJVG62xHJvsKdRTaiXdl11wPqQ5jgqDKR7ibSwU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-xl pb-md w-[260px] z-40 bg-surface-container-low border-r border-outline-variant hidden md:flex">
+<div class="px-md mt-md mb-lg">
+<div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant">
+<div class="w-10 h-10 bg-secondary-fixed flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-secondary">corporate_fare</span>
+</div>
+<div class="overflow-hidden">
+<h3 class="font-headline-md text-label-sm truncate">Enterprise Edition</h3>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-wider font-bold">Organization Portal</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="font-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-secondary font-bold bg-secondary-container/10 border-l-4 border-secondary transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">business_center</span>
+<span class="font-label-sm">Business Profile</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">description</span>
+<span class="font-label-sm">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">assignment</span>
+<span class="font-label-sm">Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">event_repeat</span>
+<span class="font-label-sm">Renewals</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">smart_toy</span>
+<span class="font-label-sm">AI Assistant</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">analytics</span>
+<span class="font-label-sm">Reports</span>
+</a>
+</nav>
+<div class="px-sm mt-auto border-t border-outline-variant pt-md">
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-sm">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-[260px] pt-24 px-md pb-xl min-h-screen">
+<div class="max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="mb-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-sm">
+<div>
+<h1 class="font-display text-display text-primary">Business Profile</h1>
+<p class="text-on-surface-variant font-body-lg">Manage your organization's core details and compliance status.</p>
+</div>
+<button class="bg-outline-variant text-on-surface-variant px-lg py-sm rounded-lg font-bold flex items-center gap-2 cursor-not-allowed opacity-60" disabled="">
+<span class="material-symbols-outlined">save</span>
+                        Save changes
+                    </button>
+</div>
+<!-- Profile Bento Card -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-lg">
+<div class="w-24 h-24 rounded-2xl bg-secondary-fixed flex items-center justify-center relative overflow-hidden">
+<span class="material-symbols-outlined text-secondary text-5xl">storefront</span>
+<div class="absolute inset-0 bg-gradient-to-tr from-secondary/10 to-transparent"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-1">
+<h2 class="font-headline-lg text-headline-lg">Ceylon Tea House</h2>
+<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Compliant
+                                </span>
+</div>
+<div class="grid grid-cols-2 gap-x-lg gap-y-1">
+<div>
+<p class="text-metadata text-on-surface-variant uppercase tracking-wider">Business Type</p>
+<p class="font-body-md font-semibold">Restaurant</p>
+</div>
+<div>
+<p class="text-metadata text-on-surface-variant uppercase tracking-wider">Registration No.</p>
+<p class="font-body-md font-semibold">PV123456</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Compliance Gauge Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-secondary/20 text-6xl">verified_user</span>
+</div>
+<div class="relative flex items-center justify-center mb-2">
+<svg class="w-24 h-24 transform -rotate-90">
+<circle class="text-surface-container-high" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-secondary compliance-ring" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="25.12" stroke-width="8"></circle>
+</svg>
+<span class="absolute font-headline-lg text-headline-lg">90%</span>
+</div>
+<p class="font-label-sm text-center">Compliance Score</p>
+<p class="text-metadata text-on-surface-variant text-center mt-1">Excellent standing</p>
+</div>
+</div>
+</div>
+<!-- Form Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<div class="lg:col-span-2 space-y-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<div class="px-md py-sm border-b border-outline-variant bg-surface-container-low">
+<h3 class="font-headline-md text-headline-md">Entity Information</h3>
+</div>
+<div class="p-md grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant">Business Name</label>
+<input class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" type="text" value="Ceylon Tea House"/>
+</div>
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant">Business Type</label>
+<select class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all">
+<option>Retail</option>
+<option selected="">Restaurant</option>
+<option>Salon</option>
+<option>Tuition Center</option>
+<option>Startup</option>
+<option>Other</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant">Registration Number</label>
+<input class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" type="text" value="PV123456"/>
+</div>
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant">Contact Phone</label>
+<input class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" type="tel" value="+94 11 234 5678"/>
+</div>
+<div class="md:col-span-2 space-y-1">
+<label class="text-label-sm text-on-surface-variant">Contact Email</label>
+<input class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" type="email" value="hello@ceylonteahouse.lk"/>
+</div>
+<div class="md:col-span-2 space-y-1">
+<label class="text-label-sm text-on-surface-variant">Full Address</label>
+<textarea class="w-full px-sm py-2 rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all" rows="3">42 Galle Road, Colombo 03, Sri Lanka</textarea>
+</div>
+</div>
+</div>
+<!-- Owner Section (Read-only) -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-md">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+<h3 class="font-headline-md text-headline-md">Owner Information</h3>
+</div>
+<span class="text-metadata text-on-surface-variant italic">Read-only profile</span>
+</div>
+<div class="flex items-center gap-md bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/50">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-secondary">
+                                JD
+                            </div>
+<div>
+<p class="font-body-md font-bold">Janaka De Silva</p>
+<p class="text-on-surface-variant text-label-sm">janaka.desilva@ceylonteahouse.lk</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-outline-variant">lock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Context Info -->
+<div class="space-y-md">
+<div class="bg-secondary-container/5 border border-secondary/20 rounded-xl p-md">
+<div class="flex items-center gap-2 mb-sm">
+<span class="material-symbols-outlined text-secondary">info</span>
+<h4 class="font-headline-md text-label-sm text-secondary">Profile Tips</h4>
+</div>
+<ul class="space-y-sm">
+<li class="flex gap-2 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary">check</span>
+                                Ensure your registration number matches your official documents.
+                            </li>
+<li class="flex gap-2 text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary">check</span>
+                                Valid contact info is required for legal notifications.
+                            </li>
+</ul>
+</div>
+<div class="relative h-48 rounded-xl overflow-hidden border border-outline-variant group">
+<div class="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic, wide-angle photo of a modern, stylish Sri Lankan tea house interior with high ceilings, dark wood accents, and rows of pristine glass tea canisters. The lighting is warm and inviting, catching the morning sun through large windows. This represents the high-end professional branding for ComplySmart client businesses." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCL2CiIVwJzp-WjeCcZ4mGa4OemBSxCDTyYpa_K2J5u45lWpTEt_UIkFGfKhh8dWNMFXm6IGK7A2X4fB0DyBAQVHy7uaes2fczPeHSHj1S3oatD5CJ22UZWD_nEraJ94jm_P8yNFPYsqBrI_UaMsQ2wFw739deoZGZgHEIV0Gtbdx7X7sjYAVO7NG-7oeqivgikHDbeIlH2cDpZX4Biz6QbJ5obyL-in4A5j4QqXjb3s4P0qgBuWLIfARrjhlu-FZWbQf59iArFGM')"></div>
+<div class="absolute bottom-0 left-0 p-sm z-20">
+<p class="text-white font-bold">Ceylon Tea House</p>
+<p class="text-white/80 text-[10px]">Headquarters View</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md">
+<h4 class="font-label-sm mb-xs">Verification Documents</h4>
+<div class="space-y-xs">
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">picture_as_pdf</span>
+<span class="text-metadata">Trade_License.pdf</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm">download</span>
+</div>
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">picture_as_pdf</span>
+<span class="text-metadata">BRC_Document.pdf</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm">download</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating AI Assistant -->
+<button class="fixed bottom-md right-md w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform active:scale-95 group z-50">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">smart_toy</span>
+</button>
+<script>
+        // Micro-interactions
+        const inputs = document.querySelectorAll('input, select, textarea');
+        const saveBtn = document.querySelector('button[disabled]');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (saveBtn.hasAttribute('disabled')) {
+                    saveBtn.removeAttribute('disabled');
+                    saveBtn.classList.remove('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed', 'opacity-60');
+                    saveBtn.classList.add('bg-secondary', 'text-white', 'hover:bg-secondary/90', 'active:scale-95', 'transition-all');
+                }
+            });
+        });
+
+        // Simple animation for the compliance ring
+        window.addEventListener('load', () => {
+            const ring = document.querySelector('.compliance-ring');
+            if (ring) {
+                // Total circumference is 251.2 (2 * PI * 40)
+                // 90% compliance = 25.12 offset
+                ring.style.strokeDashoffset = '25.12';
+            }
+        });
+    </script>
+</body></html>

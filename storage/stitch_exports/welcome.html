@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ComplySmart - Get Started</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#1b1b1d",
+                    "surface-tint": "#565e74",
+                    "surface-variant": "#e4e2e4",
+                    "surface-container-highest": "#e4e2e4",
+                    "surface-bright": "#fcf8fa",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-container": "#f0edef",
+                    "on-background": "#1b1b1d",
+                    "on-tertiary-fixed-variant": "#574425",
+                    "inverse-primary": "#bec6e0",
+                    "primary-container": "#131b2e",
+                    "on-primary-container": "#7c839b",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary": "#000000",
+                    "on-primary-fixed": "#131b2e",
+                    "tertiary-fixed-dim": "#dec29a",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-surface-variant": "#45464d",
+                    "outline-variant": "#c6c6cd",
+                    "secondary-container": "#316bf3",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#98805d",
+                    "on-secondary-fixed": "#00174b",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "surface-dim": "#dcd9db",
+                    "on-secondary-container": "#fefcff",
+                    "on-tertiary-fixed": "#271901",
+                    "inverse-surface": "#303032",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "background": "#fcf8fa",
+                    "outline": "#76777d",
+                    "surface": "#fcf8fa",
+                    "tertiary-fixed": "#fcdeb5",
+                    "tertiary": "#000000",
+                    "surface-container-high": "#eae7e9",
+                    "surface-container-low": "#f6f3f5",
+                    "secondary": "#0051d5",
+                    "secondary-fixed": "#dbe1ff",
+                    "inverse-on-surface": "#f3f0f2",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#271901",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "8px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "md": "24px",
+                    "base": "4px",
+                    "container-max": "1440px",
+                    "lg": "40px",
+                    "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-md": ["Inter"],
+                    "display": ["Hanken Grotesk"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "metadata": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "metadata": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8FAFC;
+            color: #1b1b1d;
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #0051d5;
+        }
+        .compliance-ring {
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-md py-xs bg-surface-lowest z-50 border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                ComplySmart
+            </span>
+<div class="hidden md:flex items-center bg-surface-container-low px-sm py-1.5 rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64 ml-2" placeholder="Search compliance data..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-colors rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A clean, professional corporate headshot of a middle-aged compliance officer in a modern workspace. The lighting is bright and even, reflecting a light-mode UI aesthetic. The background is a soft-focus office with minimalist decor and glass partitions. High-quality digital photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBRwLYPrcUlV8MTuB6Tzqc0yzdLILBzKROwyVFQdjikEVXbdz4N6qAJ1mJJ6XDpk_jJ4c7qI3pXoN26SdBslzW5q1ipFbITk2YrPCgEX0a-a8OUBA3OJokMrZAB2UN3bdPxvdMr11KPnhFC8hUDH1AL0fsohZE4U31OzSXy3stLXBrpaXqZyESSDKD7coege_xfWeXACSw6_TenGNFteHqu0uy1MhOT-euEEtdWqhv7-jWZjb3tzqAhd2olOOSkp3_IbzsN6TzcZc"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-xl pb-md w-[260px] z-40 bg-surface-container-low dark:bg-surface-container-highest border-r border-outline-variant dark:border-outline">
+<div class="px-md mb-lg mt-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">business</span>
+</div>
+<div>
+<h2 class="text-headline-md font-extrabold text-primary dark:text-primary-fixed-dim leading-tight">ComplySmart</h2>
+<p class="text-label-sm text-on-surface-variant">Enterprise Edition</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-sm">
+<a class="group relative flex items-center gap-3 px-md py-3 text-secondary font-bold bg-secondary-container/10 border-l-4 border-secondary transition-all scale-[0.99]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-label-sm text-label-sm">Business Profile</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-sm text-label-sm">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-sm text-label-sm">Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">event_repeat</span>
+<span class="font-label-sm text-label-sm">Renewals</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-sm text-label-sm">Reports</span>
+</a>
+</nav>
+<div class="px-sm pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pl-[260px] pt-[72px] min-h-screen">
+<div class="max-w-[1440px] mx-auto p-md lg:p-lg">
+<!-- Dashboard Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard Overview</h1>
+<p class="text-body-md text-on-surface-variant">Welcome back! Here's the current status of your compliance framework.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-md py-2.5 bg-surface-lowest border border-outline-variant text-on-surface font-semibold text-body-md rounded hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        Export PDF
+                    </button>
+<button class="px-md py-2.5 bg-secondary text-on-secondary font-semibold text-body-md rounded hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Quick Action
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Stats Layout -->
+<div class="grid grid-cols-12 gap-md mb-lg">
+<!-- Compliance Score Gauge (Large) -->
+<div class="col-span-12 lg:col-span-4 bg-surface-lowest border border-outline-variant rounded-xl p-md flex flex-col items-center justify-center min-h-[340px]">
+<div class="relative w-48 h-48 mb-4">
+<!-- SVG Gauge -->
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="96" cy="96" fill="transparent" r="80" stroke="#E2E8F0" stroke-width="12"></circle>
+<circle class="compliance-ring" cx="96" cy="96" fill="transparent" r="80" stroke="#94A3B8" stroke-dasharray="502.65" stroke-dashoffset="502.65" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg text-[48px] text-outline leading-none">0%</span>
+<span class="text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Status: Initial</span>
+</div>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Compliance Score</h3>
+<p class="text-body-md text-on-surface-variant text-center max-w-[200px] mt-2">Add your first data points to start measuring compliance.</p>
+</div>
+<!-- Three Stat Cards -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Stat Card 1 -->
+<div class="bg-surface-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="bg-surface-container-low text-on-surface-variant text-metadata px-2 py-1 rounded">No Data</span>
+</div>
+<h4 class="text-label-sm text-on-surface-variant uppercase font-bold tracking-widest">Active Documents</h4>
+<p class="text-display font-display text-outline mt-2">0</p>
+</div>
+<p class="text-metadata text-on-surface-variant mt-4">Upload files to begin tracking.</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-outline">task_alt</span>
+<span class="bg-surface-container-low text-on-surface-variant text-metadata px-2 py-1 rounded">No Tasks</span>
+</div>
+<h4 class="text-label-sm text-on-surface-variant uppercase font-bold tracking-widest">Pending Tasks</h4>
+<p class="text-display font-display text-outline mt-2">0</p>
+</div>
+<p class="text-metadata text-on-surface-variant mt-4">Assign tasks to stay on schedule.</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-outline">warning</span>
+<span class="bg-surface-container-low text-on-surface-variant text-metadata px-2 py-1 rounded">Clear</span>
+</div>
+<h4 class="text-label-sm text-on-surface-variant uppercase font-bold tracking-widest">Upcoming Renewals</h4>
+<p class="text-display font-display text-outline mt-2">0</p>
+</div>
+<p class="text-metadata text-on-surface-variant mt-4">Monitor critical expiry dates.</p>
+</div>
+<!-- AI Assistant Promo Card -->
+<div class="md:col-span-3 bg-primary-container text-on-primary-container rounded-xl p-lg relative overflow-hidden flex items-center group">
+<div class="absolute right-0 top-0 w-1/2 h-full opacity-20 group-hover:opacity-30 transition-opacity">
+
+</div>
+<div class="relative z-10 max-w-xl">
+<div class="inline-flex items-center gap-2 bg-secondary/20 text-secondary-fixed-dim px-3 py-1 rounded-full text-label-sm mb-4">
+<span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                                AI CO-PILOT ACTIVE
+                            </div>
+<h2 class="text-headline-lg font-headline-lg text-white mb-2">Automate your legal workflow</h2>
+<p class="text-body-md text-on-primary-container mb-6">Our intelligent system can scan your documents, extract key compliance dates, and suggest risk mitigations automatically.</p>
+<button class="text-white font-bold text-body-md flex items-center gap-2 group-hover:gap-4 transition-all">
+                                Learn about AI Assistant <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Section -->
+<section class="bg-surface-lowest border border-outline-variant rounded-xl overflow-hidden p-xl md:p-24 flex flex-col items-center text-center relative">
+<div class="max-w-2xl mx-auto flex flex-col items-center">
+<div class="w-64 h-64 mb-8">
+<img class="w-full h-full object-contain" data-alt="A high-end 3D isometric illustration of a minimalist white desk with a glowing blue digital tablet in the center. Around the tablet are floating, translucent glass document icons and a golden gear symbol. The style is soft, modern corporate, using a light palette of whites, soft grays, and the brand's secondary blue. The lighting is ethereal and welcoming." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-DCAvgKmFXh-FbP7BLuN5K3wqUm4SCxvti9pumoX9enqZpukYuZj-hXWIiH2oQtKXyc6nRiV1D0nJxgkn6NFxKdOVb0uPQq7sV4yaOO-9DNquBImFCAa3qEtahgehcFe-hVM8GA_81sISw3n6LkfcFRlKbIlm-SOin3ye2yfidhtzPogUrh6K6hHdmScAPCWJ-8ZnjFioq5GKzMGTZwDdA1OLJJcUzkXlSjidGHVEH25c11ee8IkTStNSuBNpwlGvv-h3DlBNdYo"/>
+</div>
+<h2 class="font-display text-display text-on-surface mb-4">Welcome to ComplySmart!</h2>
+<p class="text-body-lg text-on-surface-variant mb-10 max-w-lg">
+                        Let's get started by adding your first document or task. ComplySmart will help you organize, track, and automate your entire compliance lifecycle from one centralized place.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="flex items-center justify-center gap-3 px-xl py-4 bg-secondary text-on-secondary rounded-lg font-bold text-body-lg hover:shadow-lg hover:-translate-y-1 transition-all">
+<span class="material-symbols-outlined">upload_file</span>
+                            Upload Document
+                        </button>
+<button class="flex items-center justify-center gap-3 px-xl py-4 bg-surface-lowest border-2 border-outline-variant text-on-surface rounded-lg font-bold text-body-lg hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined">add_task</span>
+                            Add Task
+                        </button>
+</div>
+<div class="mt-12 pt-8 border-t border-outline-variant w-full grid grid-cols-1 md:grid-cols-3 gap-sm">
+<div class="flex items-center gap-3 text-left">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-secondary">1</div>
+<span class="text-label-sm text-on-surface-variant">Setup your Organization Profile</span>
+</div>
+<div class="flex items-center gap-3 text-left">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-secondary">2</div>
+<span class="text-label-sm text-on-surface-variant">Define Key Compliance Areas</span>
+</div>
+<div class="flex items-center gap-3 text-left">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-secondary">3</div>
+<span class="text-label-sm text-on-surface-variant">Upload foundational docs</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating AI Assistant FAB -->
+<button class="fixed bottom-md right-md w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform z-50 group overflow-hidden">
+<div class="absolute inset-0 opacity-40">
+
+</div>
+<span class="material-symbols-outlined relative z-10" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<!-- Tooltip -->
+<span class="absolute right-16 bg-on-surface text-white text-metadata px-3 py-1.5 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            Need help getting started? Ask me!
+        </span>
+</button>
+<script>
+        // Simple interaction for the search bar
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('border-secondary', 'ring-2', 'ring-secondary/10');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('border-secondary', 'ring-2', 'ring-secondary/10');
+        });
+
+        // Small interaction to animate the compliance ring on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const ring = document.querySelector('.compliance-ring');
+                // Even though it's 0%, we can pulse it or set it to a tiny value to show life
+                ring.style.strokeDashoffset = '502.65'; // Full circle = 2 * PI * 80
+            }, 300);
+        });
+    </script>
+</body></html>

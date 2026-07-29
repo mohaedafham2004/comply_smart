@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ComplySmart Dashboard</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1b1b1d",
+                        "surface-tint": "#565e74",
+                        "surface-variant": "#e4e2e4",
+                        "surface-container-highest": "#e4e2e4",
+                        "surface-bright": "#fcf8fa",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container": "#f0edef",
+                        "on-background": "#1b1b1d",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "inverse-primary": "#bec6e0",
+                        "primary-container": "#131b2e",
+                        "on-primary-container": "#7c839b",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#000000",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-container": "#316bf3",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#98805d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "surface-dim": "#dcd9db",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed": "#271901",
+                        "inverse-surface": "#303032",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "background": "#fcf8fa",
+                        "outline": "#76777d",
+                        "surface": "#fcf8fa",
+                        "tertiary-fixed": "#fcdeb5",
+                        "tertiary": "#000000",
+                        "surface-container-high": "#eae7e9",
+                        "surface-container-low": "#f6f3f5",
+                        "secondary": "#0051d5",
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-on-surface": "#f3f0f2",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#271901",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "base": "4px",
+                        "container-max": "1440px",
+                        "lg": "40px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "display": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "metadata": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "metadata": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcf8fa; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.7); border: 1px solid #E2E8F0; }
+        .compliance-gauge { transform: rotate(-90deg); }
+        .sidebar-active { border-left: 4px solid #0051d5; background-color: rgba(49, 107, 243, 0.1); font-weight: 700; color: #0051d5; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-md py-xs bg-surface-lowest border-b border-outline-variant z-50 h-16">
+<div class="flex items-center gap-md">
+<div class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">security</span>
+                ComplySmart
+            </div>
+<div class="hidden md:flex items-center bg-surface-container-low px-sm py-1.5 rounded-full border border-outline-variant w-80">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full ml-2" placeholder="Search compliance records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-2 pl-2">
+<div class="text-right hidden sm:block">
+<p class="font-label-sm text-on-surface">Alex Thompson</p>
+<p class="text-[10px] text-on-surface-variant">Compliance Officer</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a mid-thirties corporate professional with a friendly expression. The background is a soft, out-of-focus modern office setting with cool blue and grey tones. The lighting is crisp and professional, highlighting the high-trust fintech aesthetic of the application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7CHnnKhSP45KeOtmBumKPMWSZa39CP4TKZFptjb7EnikJ8mwVMMRn2Ij49FesXGYr9jSLpNNlL1Z34CSPSdbb83ZZb50fbPMi7yqbyVf7VvnQEB3DRVzmZVqJVFjhZQRuWYfDNnpL9umE9WQ7JOwCnwhTAUyF4D2w53z35Mb09g5O5WQX2re0kijYk_XHpMrbJ1lFsbM9xaMsDfW_1AXDBDYg24Npee7BxKhdBsKqu1JEnkmPueOtyh8OhpUDHqumtY5wXwXS4Y0"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-md w-[260px] z-40 bg-surface-container-low border-r border-outline-variant hidden md:flex">
+<nav class="flex-1 px-sm space-y-1">
+<a class="sidebar-active flex items-center gap-3 px-md py-3 rounded-r-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-label-sm">Business Profile</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-sm">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-sm">Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">event_repeat</span>
+<span class="font-label-sm">Renewals</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm">AI Assistant</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-sm">Reports</span>
+</a>
+</nav>
+<div class="px-sm pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-sm">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-[260px] pt-24 px-md pb-md">
+<div class="max-w-container-max mx-auto space-y-md">
+<!-- Top Section: Score & Stats -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<!-- Compliance Score Gauge -->
+<div class="lg:col-span-4 bg-surface-lowest p-md rounded-xl border border-outline-variant flex flex-col items-center justify-center text-center">
+<h3 class="font-headline-md text-on-surface-variant mb-4 self-start">Compliance Health</h3>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="compliance-gauge w-full h-full" viewbox="0 0 100 100">
+<circle class="text-surface-container stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="8"></circle>
+<circle class="text-amber-500 stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="55" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-display text-display text-on-surface">78%</span>
+<span class="font-label-sm text-on-surface-variant">AVERAGE SCORE</span>
+</div>
+</div>
+<p class="mt-4 font-body-md text-on-surface-variant">Your enterprise compliance is in the <span class="text-amber-600 font-bold">Stable Range</span>. Resolve overdue items to improve.</p>
+</div>
+<!-- Stat Cards -->
+<div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-md">
+<div class="bg-surface-lowest p-md rounded-xl border border-outline-variant hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary/10 text-secondary rounded-lg">
+<span class="material-symbols-outlined">event_repeat</span>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+<p class="text-on-surface-variant font-label-sm">Upcoming Renewals</p>
+<h2 class="font-display text-display text-on-surface mt-1">3</h2>
+<div class="mt-4 flex items-center text-green-600 text-xs gap-1">
+<span class="material-symbols-outlined text-xs">trending_down</span>
+<span>2 less than last month</span>
+</div>
+</div>
+<div class="bg-surface-lowest p-md rounded-xl border border-outline-variant hover:shadow-sm transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/5 text-primary rounded-lg">
+<span class="material-symbols-outlined">assignment</span>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+<p class="text-on-surface-variant font-label-sm">Pending Tasks</p>
+<h2 class="font-display text-display text-on-surface mt-1">12</h2>
+<div class="mt-4 flex items-center text-on-surface-variant text-xs gap-1">
+<span class="material-symbols-outlined text-xs">schedule</span>
+<span>Next due in 2 days</span>
+</div>
+</div>
+<div class="bg-surface-lowest p-md rounded-xl border border-outline-variant hover:shadow-sm transition-shadow border-l-4 border-l-error">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-error/10 text-error rounded-lg">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+<p class="text-on-surface-variant font-label-sm">Overdue Items</p>
+<h2 class="font-display text-display text-error mt-1">1</h2>
+<div class="mt-4 flex items-center text-error text-xs gap-1">
+<span class="material-symbols-outlined text-xs">priority_high</span>
+<span>Action required immediately</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Section: Renewals & Tasks -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+<!-- Upcoming Renewals -->
+<div class="bg-surface-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-md py-4 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-on-surface">Upcoming Renewals</h3>
+<button class="text-secondary font-label-sm hover:underline">View All</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">General Liability Insurance</p>
+<p class="font-metadata text-on-surface-variant">Due: Oct 24, 2023</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-amber-100 text-amber-700 font-label-sm rounded-full">Due Soon</span>
+</div>
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-purple-50 text-purple-600 rounded-lg">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">State Business License</p>
+<p class="font-metadata text-on-surface-variant">Due: Nov 12, 2023</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant font-label-sm rounded-full">32 Days Left</span>
+</div>
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-teal-50 text-teal-600 rounded-lg">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">SOC2 Certification</p>
+<p class="font-metadata text-on-surface-variant">Due: Dec 01, 2023</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant font-label-sm rounded-full">51 Days Left</span>
+</div>
+</div>
+</div>
+<!-- Recent Tasks -->
+<div class="bg-surface-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-md py-4 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-on-surface">Recent Tasks</h3>
+<button class="text-secondary font-label-sm hover:underline">View All</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg">
+<span class="material-symbols-outlined">border_color</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">Sign Vendor Agreement - CloudCorp</p>
+<p class="font-metadata text-on-surface-variant">Assigned to You • Oct 15</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-blue-100 text-blue-700 font-label-sm rounded-full">In Progress</span>
+</div>
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-600 rounded-lg">
+<span class="material-symbols-outlined">upload_file</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">Upload Q3 Tax Documents</p>
+<p class="font-metadata text-on-surface-variant">Accounting Team • Oct 16</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-blue-100 text-blue-700 font-label-sm rounded-full">In Progress</span>
+</div>
+<div class="px-md py-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-600 rounded-lg">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">Update Access Control Policy</p>
+<p class="font-metadata text-on-surface-variant">Security Review • Oct 20</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant font-label-sm rounded-full">Pending</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Recent Documents -->
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-on-surface">Recent Documents</h3>
+<div class="flex gap-2">
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="p-1.5 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Doc Card 1 -->
+<div class="bg-surface-lowest p-sm rounded-xl border border-outline-variant group hover:border-secondary transition-all cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low rounded-lg mb-sm relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="A high-resolution scanning of a legal document with professional letterhead. The paper has a slight texture and is shown in a clean, minimalist lighting setup with shadows that imply a real office environment. The style is modern corporate with blue and grey tones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCcdgWt6e2HPh9jnjC4G91TP-OVL2TJPUhi0Z0RhCiC287qvRupDg5XjJ_A-gzUmwqMGcz0cr9gJ0duAd1zdoiWeel1s3LAeFPo9Vftlq54uzdB8UpW6WSjZ0rsixgbpuPntzy6kqPafBW45na8f-CprqaG3AxfwP6RWdm3X89NqnEGLrvIeBAZWwoER5pgDvhEH5lEuZbvkWLQSod3KLAQ_qTaMwHityKU6O0PGKZ95Q1azZcPgN2cIB24YqsAGcqIvJ7_19S1mMs')"></div>
+<div class="relative z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-secondary">visibility</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-body-md font-bold truncate">Lease_Agreement_2023.pdf</p>
+<div class="flex items-center justify-between">
+<span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Real Estate</span>
+<span class="flex items-center gap-1 font-metadata text-secondary">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                    Extracted
+                                </span>
+</div>
+</div>
+</div>
+<!-- Doc Card 2 -->
+<div class="bg-surface-lowest p-sm rounded-xl border border-outline-variant group hover:border-secondary transition-all cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low rounded-lg mb-sm relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Close-up of an official government tax form with complex grids and fields. The image is styled with a subtle blue tint to match the financial tech brand, with soft professional studio lighting highlighting the precision of the document details." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwP9AY3nW3mfrSIfUCI9UxCRiiErbrUHdlvzn75Pwz0PrZ939Vn9Uxu6O4CHgRXkvOHNMVuygbmAcB7Xu9ZdBZ1GV4BJdDfDSGb8jLQEY31w8cuW7bAqq-9RYTl4qcLyZtbkGrynHJ3I9V0TV4baYTXuNKIv8fyNXdRYorL3qOsbE87WGbLofFIkzlXQPzqFnGyPjzFtTC-WzZCpPvsJZwh68jbJLtl-1GoSAYjdr7C-L9D4Jovr7U2tGD8IuwrosiLgY3MIBUnVM')"></div>
+<div class="relative z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-secondary">visibility</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-body-md font-bold truncate">Q3_Tax_Return_Draft.pdf</p>
+<div class="flex items-center justify-between">
+<span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Tax &amp; Finance</span>
+<span class="flex items-center gap-1 font-metadata text-secondary">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                    Extracted
+                                </span>
+</div>
+</div>
+</div>
+<!-- Doc Card 3 -->
+<div class="bg-surface-lowest p-sm rounded-xl border border-outline-variant group hover:border-secondary transition-all cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low rounded-lg mb-sm relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="A stack of modern identification cards and business permits arranged neatly on a sleek, dark desk. The lighting is focused and dramatic, using a shallow depth of field to emphasize the top card. Cool white and deep blue tones define the professional, secure atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5Z_rH3O5mwTr-WQPNpFaCeUSLcDs8TqqjoVYDq6GEGvhBvGKP__g8hbz5xnnARCGrGzDqNuSDzqws8CtVLCg8Et2R1ImjdyYRmVND4jKwfi_Kucpj__lj0PDCLeMjQQhU6KWZoZq62NoZSYZw9HHPP7c2yj3n_6LBh1yKjQ3G44kDlXTtoig0KLTkaevdhzzuU59eRbjQ9ZNHSc7GP4rTzZTtz3wzhtc8Mw0jDzdKxZuQAyNFCfzPZ1D24fNDkrVeCxj7EKnxDzA')"></div>
+<div class="relative z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-secondary">visibility</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-body-md font-bold truncate">Operating_Permit_V2.pdf</p>
+<div class="flex items-center justify-between">
+<span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Licenses</span>
+<span class="flex items-center gap-1 font-metadata text-secondary">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                    Extracted
+                                </span>
+</div>
+</div>
+</div>
+<!-- Doc Card 4 -->
+<div class="bg-surface-lowest p-sm rounded-xl border border-outline-variant group hover:border-secondary transition-all cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low rounded-lg mb-sm relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="A digital rendering of a data security agreement with a small glowing padlock icon subtly integrated into the background. The aesthetic is tech-focused and modern, utilizing a high-key color palette of whites and light greys with sharp, professional typography." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD34PbUj2s90O-mxLl1QpcPDh90q0GVTu900r1e-Zp67eciB10NGxsUtJ4K9PPFtlRjM7NdLeb0DtOQJfphACJg2UKC1b9Z9q5POBvf2QfeBhQNbXehEac_mqF0I43ZV8yV2CaU_1l2zphzxoYgDwni2QkhjadIghG9V8g8jQoq0fBuO4RgRdF7vnFxrACelRuy2ihCkP6mjHGaenRim9fWrNOP6qgkF_-XkvDhb2_72qjqY1AqoRmaUmMaeCG9LPFsLIJjPN7HGvc')"></div>
+<div class="relative z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-secondary">visibility</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-body-md font-bold truncate">Data_Privacy_Addendum.pdf</p>
+<div class="flex items-center justify-between">
+<span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Legal</span>
+<span class="flex items-center gap-1 font-metadata text-secondary">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                    Extracted
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- AI Assistant FAB -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform active:scale-95 group overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-secondary to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined relative z-10 text-[28px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</button>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.98)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = '';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+            });
+        });
+
+        // Initialize any tooltips or animations if needed
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('ComplySmart Dashboard Loaded');
+        });
+    </script>
+</body></html>
