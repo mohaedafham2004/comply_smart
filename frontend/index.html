@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light" x-data="themeManager()" :class="{ 'dark': theme === 'dark', 'light': theme === 'light' }">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ComplySmart — Enterprise Compliance Platform for Sri Lanka</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script type="module" src="/src/js/api.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; }
+        html.light, html.light body { background-color: #f8fafc !important; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.08); }
+        .dark .glass-card { background: #09090b; border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased flex flex-col justify-between" x-data="globalApp()" x-init="initApp()">
+
+    <!-- Header -->
+    <header class="w-full flex justify-between items-center px-6 md:px-12 py-5 bg-white/95 dark:bg-black/95 border-b border-slate-200 dark:border-zinc-800 backdrop-blur-md">
+        <a href="/index.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md">
+                <span class="material-symbols-outlined text-xl">verified_user</span>
+            </div>
+            <span>Comply<span class="brand-gradient">Smart</span></span>
+        </a>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+            <a href="/login.html" class="px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:text-slate-900">Sign In</a>
+            <a href="/register.html" class="px-5 py-2 text-xs font-bold bg-indigo-600 text-white rounded-full hover:bg-indigo-500 shadow-md">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="max-w-6xl mx-auto px-6 py-16 md:py-24 text-center space-y-8">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-semibold">
+            <span class="material-symbols-outlined text-sm">auto_awesome</span> Sri Lanka's SME Regulatory Compliance Platform
+        </div>
+
+        <h1 class="font-hanken text-4xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight max-w-4xl mx-auto">
+            Automate tax deadlines, EPF/ETF returns, and permit renewals with <span class="brand-gradient">Gemini AI</span>
+        </h1>
+
+        <p class="text-slate-600 dark:text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+            Upload certificates to Cloudinary, run Tesseract OCR text extractions, generate customized compliance checklists, and track upcoming government renewal dates.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <a href="/register.html" class="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-full shadow-lg transition transform hover:-translate-y-0.5">
+                Register Free Business Account
+            </a>
+            <a href="/dashboard.html" class="w-full sm:w-auto px-8 py-3.5 bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 text-slate-800 dark:text-zinc-200 font-bold text-xs rounded-full transition">
+                Explore Demo Dashboard
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-6 text-xs text-slate-500 border-t border-slate-200 dark:border-zinc-800">
+        ComplySmart Decoupled Architecture &copy; 2026. Built with Vite, Alpine.js, Tailwind CSS, & Laravel 12 API.
+    </footer>
+
+    <script>
+        function themeManager() {
+            return {
+                theme: localStorage.getItem('cs_theme') || 'light',
+                toggleTheme() {
+                    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem('cs_theme', this.theme);
+                    if (this.theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                        document.documentElement.classList.remove('light');
+                    } else {
+                        document.documentElement.classList.add('light');
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            };
+        }
+        function globalApp() {
+            return {
+                token: localStorage.getItem('cs_token') || '',
+                initApp() {}
+            };
+        }
+    </script>
+</body>
+</html>
