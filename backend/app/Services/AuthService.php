@@ -52,8 +52,8 @@ class AuthService
         $this->userRepo->update($user, ['business_id' => (string) $business->_id]);
         $user->refresh();
 
-        // 4. Issue Sanctum token
-        $token = $user->createToken('api-token')->plainTextToken;
+        // 4. Issue JWT token
+        $token = auth('api')->login($user);
 
         // 5. Audit
         $this->auditService->log($user, 'registered', 'User', (string) $user->_id, [
@@ -84,9 +84,11 @@ class AuthService
             ]);
         }
 
-        // Revoke all previous tokens so only one active session exists
-        $user->tokens()->delete();
-        $token = $user->createToken('api-token')->plainTextToken;
+        // Invalidate old token (if applicable for JWT, usually we just let it expire or blacklist it, 
+        // but since we want only one active session, we can attempt to invalidate current if sent, 
+        // however, login doesn't have the old token, so we just generate a new one)
+        // With JWT we don't have a simple way to invalidate ALL tokens for a user without custom logic.
+        $token = auth('api')->login($user);
 
         $this->auditService->log($user, 'login', 'User', (string) $user->_id, [
             'ip' => request()->ip(),
@@ -103,7 +105,7 @@ class AuthService
      */
     public function logout(User $user): void
     {
-        $user->currentAccessToken()->delete();
+        auth('api')->logout();
         $this->auditService->log($user, 'logout', 'User', (string) $user->_id);
     }
 

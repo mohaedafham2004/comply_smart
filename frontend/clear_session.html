@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Clearing Session — ComplySmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-900 flex items-center justify-center">
+    <div class="text-center space-y-4">
+        <div id="msg" class="text-white text-lg font-bold">Clearing saved credentials...</div>
+        <div class="text-slate-400 text-sm" id="sub">Please wait...</div>
+    </div>
+
+    <script>
+        // Clear ALL ComplySmart localStorage keys
+        const keysToRemove = ['cs_token', 'cs_user', 'cs_business', 'cs_theme'];
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+
+        // Also wipe any other cs_ prefixed keys
+        Object.keys(localStorage)
+            .filter(k => k.startsWith('cs_'))
+            .forEach(k => localStorage.removeItem(k));
+
+        // Clear sessionStorage too
+        sessionStorage.clear();
+
+        document.getElementById('msg').textContent = '✓ All credentials cleared!';
+        document.getElementById('sub').textContent = 'Redirecting to login...';
+
+        // Redirect to login after 1.5 seconds
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 1500);
+    </script>
+</body>
+</html>
+

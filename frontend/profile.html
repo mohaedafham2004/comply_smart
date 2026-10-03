@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Business Profile — ComplySmart</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script type="module" src="/src/js/api.js"></script>
+
+        <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased" x-data="profilePage()" x-init="initProfile()">
+
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 w-full flex justify-between items-center px-6 bg-white/95 dark:bg-black/95 border-b border-slate-200/80 dark:border-zinc-800 z-50 h-16 backdrop-blur-md">
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <span>Comply<span class="brand-gradient">Smart</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+            <a href="/notifications.html" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:border-zinc-800 mx-1"></div>
+            <button @click="logout()" title="Logout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+                <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex-1 flex overflow-hidden pt-16">
+
+        <!-- SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 w-[260px] z-40 bg-white/95 border-r border-slate-200/80 dark:bg-black/95 dark:border-zinc-800 hidden md:flex">
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+                <a href="/dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="truncate">Dashboard</span>
+                </a>
+                <a href="/profile.html" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl text-xs w-full font-medium">
+                    <span class="material-symbols-outlined text-lg">business_center</span>
+                    <span class="truncate">Business Profile</span>
+                </a>
+                <a href="/documents.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">description</span>
+                    <span class="truncate">Document Vault</span>
+                </a>
+                <a href="/upload_document.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cloud_upload</span>
+                    <span class="truncate">Upload Document</span>
+                </a>
+                <a href="/tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">assignment</span>
+                    <span class="truncate">Compliance Tasks</span>
+                </a>
+                <a href="/renewals.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">event_repeat</span>
+                    <span class="truncate">Renewals Tracker</span>
+                </a>
+                <a href="/ai.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-purple-600 dark:text-purple-400">smart_toy</span>
+                    <span class="truncate">AI Assistant</span>
+                </a>
+                <a href="/reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="truncate">Analytics & Reports</span>
+                </a>
+                <a href="/notifications.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="truncate">Notifications</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-[260px] p-6 md:p-8 overflow-y-auto bg-slate-50 dark:bg-black">
+            <div class="max-w-4xl mx-auto space-y-6">
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="font-hanken text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Business Entity Profile</h1>
+                        <p class="text-xs text-slate-500 dark:text-zinc-400">Manage company registration details and official contacts for Sri Lankan compliance</p>
+                    </div>
+                </div>
+
+                <template x-if="message">
+                    <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-2 font-semibold">
+                        <span class="material-symbols-outlined text-base text-emerald-600 dark:text-emerald-400">check_circle</span>
+                        <span x-text="message"></span>
+                    </div>
+                </template>
+
+                <template x-if="error">
+                    <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2 font-semibold">
+                        <span class="material-symbols-outlined text-base text-rose-600 dark:text-rose-400">error</span>
+                        <span x-text="error"></span>
+                    </div>
+                </template>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Left 1-Col: Profile Overview Card -->
+                    <div class="space-y-4">
+                        <div class="glass-card p-6 rounded-3xl text-center space-y-4">
+                            <div class="w-16 h-16 rounded-2xl bg-indigo-600/10 text-indigo-600 dark:bg-zinc-800 dark:text-zinc-200 border border-indigo-500/20 dark:border-zinc-700 flex items-center justify-center text-2xl font-bold mx-auto">
+                                <span class="material-symbols-outlined text-3xl">corporate_fare</span>
+                            </div>
+
+                            <div class="space-y-1">
+                                <h2 class="font-hanken text-base font-bold text-slate-900 dark:text-white" x-text="form.name || (user?.name ? user.name + '\'s Business' : 'Business Name')"></h2>
+                                <div class="text-xs text-indigo-600 dark:text-zinc-400 font-semibold capitalize" x-text="form.type ? form.type.replace('_',' ') : 'SME'"></div>
+                                <div class="text-[11px] text-slate-500 dark:text-zinc-500 font-mono" x-text="form.registration_no ? ('BRN: ' + form.registration_no) : 'BRN: Pending Registration'"></div>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-200 dark:border-zinc-800 text-left space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500 dark:text-zinc-400">Owner</span>
+                                    <span class="text-slate-900 dark:text-white font-semibold" x-text="user?.name || 'Owner'"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500 dark:text-zinc-400">Role</span>
+                                    <span class="text-indigo-600 dark:text-zinc-300 font-semibold uppercase" x-text="user?.role || 'owner'"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500 dark:text-zinc-400">Email</span>
+                                    <span class="text-slate-800 dark:text-zinc-200 truncate max-w-[140px]" x-text="user?.email || ''"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right 2-Cols: Edit Business Profile Form -->
+                    <div class="md:col-span-2">
+                        <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-zinc-800 pb-3">
+                                <span class="material-symbols-outlined text-indigo-600 dark:text-zinc-400">edit_note</span>
+                                <span>Update Profile Details</span>
+                            </h3>
+
+                            <form @submit.prevent="updateProfile()" class="space-y-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Registered Business Name *</label>
+                                    <input x-model="form.name" type="text" required
+                                        class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                </div>
+
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Registration Number (BRN) *</label>
+                                        <input x-model="form.registration_no" type="text" required
+                                            class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Entity Type *</label>
+                                        <select x-model="form.type" required
+                                            class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                            <option value="private_limited">Private Limited (PVT LTD)</option>
+                                            <option value="sole_proprietorship">Sole Proprietorship</option>
+                                            <option value="partnership">Partnership</option>
+                                            <option value="public_limited">Public Limited</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Industry / Sector</label>
+                                        <input x-model="form.industry" type="text" placeholder="e.g. Information Technology, Retail"
+                                            class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Official Contact Number</label>
+                                        <input x-model="form.phone" type="text" placeholder="+94 11 234 5678"
+                                            class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Registered Office Address</label>
+                                    <textarea x-model="form.address" rows="2" placeholder="Colombo 03, Western Province, Sri Lanka"
+                                        class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition"></textarea>
+                                </div>
+
+                                <button type="submit" :disabled="saving"
+                                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                                    <span x-show="!saving">Save Profile Updates</span>
+                                    <span x-show="saving"><i class="fa-solid fa-circle-notch fa-spin"></i> Saving...</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function themeManager() {
+    return {
+        theme: localStorage.getItem('cs_theme') || 'light',
+        toggleTheme() {
+            this.theme = this.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('cs_theme', this.theme);
+            if (this.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    };
+}
+
+function profilePage() {
+    return {
+        ...themeManager(),
+        token: localStorage.getItem('cs_token') || '',
+        user: JSON.parse(localStorage.getItem('cs_user') || 'null'),
+        business: JSON.parse(localStorage.getItem('cs_business') || 'null'),
+        form: {
+            name: '',
+            registration_no: '',
+            type: 'private_limited',
+            industry: '',
+            phone: '',
+            address: ''
+        },
+        saving: false,
+        message: '',
+        error: '',
+
+        async initProfile() {
+            if (this.business) {
+                this.form = { ...this.form, ...this.business };
+            }
+            if (this.token) {
+                const res = await window.api('GET', '/business');
+                if (res.ok && res.data.data) {
+                    this.form = { ...this.form, ...res.data.data };
+                    localStorage.setItem('cs_business', JSON.stringify(res.data.data));
+                }
+            }
+        },
+
+        async updateProfile() {
+            this.saving = true;
+            this.message = '';
+            this.error = '';
+
+            const res = await window.api('PUT', '/business', this.form);
+            this.saving = false;
+
+            if (res.ok) {
+                this.message = 'Business entity profile updated successfully!';
+                localStorage.setItem('cs_business', JSON.stringify(res.data.data || this.form));
+            } else {
+                this.error = res.data.message || 'Failed to update business profile.';
+            }
+        },
+
+        logout() {
+            if (window.logout) window.logout();
+            else {
+                localStorage.removeItem('cs_token');
+                window.location.href = '/login.html';
+            }
+        }
+    };
+}
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full light" x-data="themeManager()" :class="{ 'dark': theme === 'dark', 'light': theme === 'light' }">
+<html lang="en" class="h-full light">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,20 +24,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script type="module" src="/src/js/api.js"></script>
+    <script src="/api-global.js"></script>
 
-    <style>
+        <style>
         [x-cloak] { display: none !important; }
-        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; }
-        html.light, html.light body { background-color: #f8fafc !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
         body { font-family: 'Inter', sans-serif; }
         .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.08); }
-        .dark .glass-card { background: #09090b; border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 dark:bg-black flex items-center justify-center p-6" x-data="registerForm()">
+<body class="min-h-screen bg-slate-50 dark:bg-black flex items-center justify-center p-6 relative" x-data="registerForm()">
+
+    <!-- Theme Toggle at top right -->
+    <div class="fixed top-5 right-5 z-50">
+        <button @click="toggleTheme()" class="p-2.5 rounded-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 shadow-sm hover:scale-105 transition" title="Toggle theme">
+            <span class="material-symbols-outlined text-lg block text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+        </button>
+    </div>
 
     <main class="w-full max-w-[460px]">
         <div class="flex flex-col items-center mb-6 text-center">
@@ -76,15 +95,23 @@
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block">Password *</label>
-                    <input x-model="form.password" type="password" required placeholder="Min 8 characters" 
-                        class="w-full h-11 px-4 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block" for="register-password">Password *</label>
+                    <div class="relative">
+                        <input x-model="form.password" :type="showPassword ? 'text' : 'password'" id="register-password" required placeholder="Min 8 characters" autocomplete="new-password"
+                            class="w-full h-11 px-4 pr-16 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                        <button type="button" @click="showPassword = !showPassword" :aria-pressed="showPassword" :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                            class="absolute inset-y-0 right-3 text-xs font-semibold text-indigo-600 dark:text-indigo-400" x-text="showPassword ? 'Hide' : 'Show'"></button>
+                    </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block">Confirm Password *</label>
-                    <input x-model="form.password_confirmation" type="password" required placeholder="Confirm password" 
-                        class="w-full h-11 px-4 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block" for="register-password-confirmation">Confirm Password *</label>
+                    <div class="relative">
+                        <input x-model="form.password_confirmation" :type="showPasswordConfirmation ? 'text' : 'password'" id="register-password-confirmation" required placeholder="Confirm password" autocomplete="new-password"
+                            class="w-full h-11 px-4 pr-16 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                        <button type="button" @click="showPasswordConfirmation = !showPasswordConfirmation" :aria-pressed="showPasswordConfirmation" :aria-label="showPasswordConfirmation ? 'Hide confirm password' : 'Show confirm password'"
+                            class="absolute inset-y-0 right-3 text-xs font-semibold text-indigo-600 dark:text-indigo-400" x-text="showPasswordConfirmation ? 'Hide' : 'Show'"></button>
+                    </div>
                 </div>
 
                 <button type="submit" :disabled="loading" 
@@ -102,13 +129,37 @@
 
     <script>
         function themeManager() {
-            return { theme: localStorage.getItem('cs_theme') || 'light' };
+            return {
+                theme: localStorage.getItem('cs_theme') || 'light',
+                toggleTheme() {
+                    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem('cs_theme', this.theme);
+                    if (this.theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                        document.documentElement.classList.remove('light');
+                    } else {
+                        document.documentElement.classList.add('light');
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            };
         }
         function registerForm() {
-            return {
+    return {
+        ...themeManager(),
                 form: { name: '', email: '', business_name: '', password: '', password_confirmation: '' },
+                showPassword: false,
+                showPasswordConfirmation: false,
                 loading: false,
                 errorMessage: '',
+                async waitForApi() {
+                    let tries = 0;
+                    while (typeof window.api !== 'function' && tries < 50) {
+                        await new Promise(r => setTimeout(r, 100));
+                        tries++;
+                    }
+                    return typeof window.api === 'function';
+                },
                 async submitRegister() {
                     this.loading = true;
                     this.errorMessage = '';
@@ -121,7 +172,14 @@
                         if (d.business) localStorage.setItem('cs_business', JSON.stringify(d.business));
                         window.location.href = '/dashboard.html';
                     } else {
-                        this.errorMessage = res.data?.message || 'Registration failed.';
+                        // Extract field-level validation errors from Laravel 422 response
+                        const errors = res.data?.errors;
+                        if (errors && typeof errors === 'object') {
+                            const msgs = Object.values(errors).flat();
+                            this.errorMessage = msgs.join(' ') || res.data?.message || 'Registration failed.';
+                        } else {
+                            this.errorMessage = res.data?.message || 'Registration failed. Please try again.';
+                        }
                     }
                 }
             };
