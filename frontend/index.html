@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full light" x-data="themeManager()" :class="{ 'dark': theme === 'dark', 'light': theme === 'light' }">
+<html lang="en" class="h-full light">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ComplySmart — Enterprise Compliance Platform for Sri Lanka</title>
+    <title>Sign In — ComplySmart</title>
     
     <script>
         (function() {
@@ -24,69 +24,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script type="module" src="/src/js/api.js"></script>
+    <script src="/api-global.js"></script>
 
-    <style>
+        <style>
         [x-cloak] { display: none !important; }
         html { scroll-behavior: smooth; }
-        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; }
-        html.light, html.light body { background-color: #f8fafc !important; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
         body { font-family: 'Inter', sans-serif; }
         .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.08); }
-        .dark .glass-card { background: #09090b; border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
         .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased flex flex-col justify-between" x-data="globalApp()" x-init="initApp()">
+<body class="min-h-screen bg-slate-50 dark:bg-black flex items-center justify-center p-6 relative" x-data="loginForm()" x-init="checkAuth()">
 
-    <!-- Header -->
-    <header class="w-full flex justify-between items-center px-6 md:px-12 py-5 bg-white/95 dark:bg-black/95 border-b border-slate-200 dark:border-zinc-800 backdrop-blur-md">
-        <a href="/index.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md">
-                <span class="material-symbols-outlined text-xl">verified_user</span>
+    <!-- Theme Toggle at top right -->
+    <div class="fixed top-5 right-5 z-50">
+        <button @click="toggleTheme()" class="p-2.5 rounded-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 shadow-sm hover:scale-105 transition" title="Toggle theme">
+            <span class="material-symbols-outlined text-lg block text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+        </button>
+    </div>
+
+    <main class="w-full max-w-[420px]">
+        <div class="flex flex-col items-center mb-8 text-center">
+            <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                <span class="material-symbols-outlined text-[36px]">verified_user</span>
             </div>
-            <span>Comply<span class="brand-gradient">Smart</span></span>
-        </a>
-
-        <div class="flex items-center gap-3">
-            <button @click="toggleTheme()" class="p-2 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
-                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
-            </button>
-            <a href="/login.html" class="px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:text-slate-900">Sign In</a>
-            <a href="/register.html" class="px-5 py-2 text-xs font-bold bg-indigo-600 text-white rounded-full hover:bg-indigo-500 shadow-md">Get Started</a>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <main class="max-w-6xl mx-auto px-6 py-16 md:py-24 text-center space-y-8">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-semibold">
-            <span class="material-symbols-outlined text-sm">auto_awesome</span> Sri Lanka's SME Regulatory Compliance Platform
+            <h1 class="font-hanken text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Comply<span class="brand-gradient">Smart</span>
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1">Sign in to Sri Lanka Compliance Portal</p>
         </div>
 
-        <h1 class="font-hanken text-4xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight max-w-4xl mx-auto">
-            Automate tax deadlines, EPF/ETF returns, and permit renewals with <span class="brand-gradient">Gemini AI</span>
-        </h1>
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <template x-if="errorMessage">
+                <div class="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-3.5 rounded-xl flex items-center gap-2 border border-rose-500/20 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-base shrink-0">error</span>
+                    <span x-text="errorMessage"></span>
+                </div>
+            </template>
 
-        <p class="text-slate-600 dark:text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Upload certificates to Cloudinary, run Tesseract OCR text extractions, generate customized compliance checklists, and track upcoming government renewal dates.
-        </p>
+            <form @submit.prevent="submitLogin()" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block" for="email">Work Email</label>
+                    <input x-model="form.email" type="email" id="email" required placeholder="owner@company.lk" 
+                        class="w-full h-11 px-4 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <a href="/register.html" class="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-full shadow-lg transition transform hover:-translate-y-0.5">
-                Register Free Business Account
-            </a>
-            <a href="/dashboard.html" class="w-full sm:w-auto px-8 py-3.5 bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 text-slate-800 dark:text-zinc-200 font-bold text-xs rounded-full transition">
-                Explore Demo Dashboard
-            </a>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300 block" for="password">Password</label>
+                    <div class="relative">
+                        <input x-model="form.password" :type="showPassword ? 'text' : 'password'" id="password" required placeholder="••••••••" autocomplete="current-password"
+                            class="w-full h-11 px-4 pr-16 text-xs bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                        <button type="button" @click="showPassword = !showPassword" :aria-pressed="showPassword" :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                            class="absolute inset-y-0 right-3 text-xs font-semibold text-indigo-600 dark:text-indigo-400" x-text="showPassword ? 'Hide' : 'Show'"></button>
+                    </div>
+                </div>
+
+                <button type="submit" :disabled="loading" 
+                    class="w-full h-11 bg-indigo-600 hover:bg-indigo-500 dark:bg-zinc-100 dark:hover:bg-white dark:text-black font-bold text-xs text-white rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50">
+                    <span x-show="!loading">Sign In</span>
+                    <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>
+                </button>
+            </form>
+
+            <div class="pt-4 border-t border-slate-200 dark:border-zinc-800 text-center text-xs text-slate-500 dark:text-zinc-400">
+                Don't have a business account? <a href="/register.html" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Register</a>
+            </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="w-full text-center py-6 text-xs text-slate-500 border-t border-slate-200 dark:border-zinc-800">
-        ComplySmart Decoupled Architecture &copy; 2026. Built with Vite, Alpine.js, Tailwind CSS, & Laravel 12 API.
-    </footer>
 
     <script>
         function themeManager() {
@@ -105,10 +124,48 @@
                 }
             };
         }
-        function globalApp() {
-            return {
-                token: localStorage.getItem('cs_token') || '',
-                initApp() {}
+        function loginForm() {
+    return {
+        ...themeManager(),
+                form: { email: '', password: '' },
+                showPassword: false,
+                loading: false,
+                errorMessage: '',
+                checkAuth() {
+                    if (localStorage.getItem('cs_token')) {
+                        window.location.href = '/dashboard.html';
+                    }
+                },
+                async waitForApi() {
+                    let tries = 0;
+                    while (typeof window.api !== 'function' && tries < 50) {
+                        await new Promise(r => setTimeout(r, 100));
+                        tries++;
+                    }
+                    return typeof window.api === 'function';
+                },
+                async submitLogin() {
+                    this.loading = true;
+                    this.errorMessage = '';
+                    const res = await window.api('POST', '/auth/login', this.form);
+                    this.loading = false;
+                    const d = res.data?.data || res.data;
+                    if (res.ok && d && d.token) {
+                        localStorage.setItem('cs_token', d.token);
+                        localStorage.setItem('cs_user', JSON.stringify(d.user));
+                        if (d.business) localStorage.setItem('cs_business', JSON.stringify(d.business));
+                        window.location.href = '/dashboard.html';
+                    } else {
+                        // Extract field-level validation errors from Laravel 422 response
+                        const errors = res.data?.errors;
+                        if (errors && typeof errors === 'object') {
+                            const msgs = Object.values(errors).flat();
+                            this.errorMessage = msgs.join(' ') || res.data?.message || 'Invalid email or password.';
+                        } else {
+                            this.errorMessage = res.data?.message || 'Invalid email or password.';
+                        }
+                    }
+                }
             };
         }
     </script>

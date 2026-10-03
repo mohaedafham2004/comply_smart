@@ -44,8 +44,8 @@ $reminderHandler = function () {
     return response()->json(['message' => 'Not available in production.'], 403);
 };
 
-Route::middleware('auth:sanctum')->post('/v1/test-reminders', $reminderHandler);
-Route::middleware('auth:sanctum')->post('/v1/notifications/trigger-reminders', $reminderHandler);
+Route::middleware('auth:api')->post('/v1/test-reminders', $reminderHandler);
+Route::middleware('auth:api')->post('/v1/notifications/trigger-reminders', $reminderHandler);
 
 
 // ─── Auth — Public ─────────────────────────────────────────────────────────
@@ -59,14 +59,14 @@ Route::prefix('v1/auth')->group(function () {
         ->middleware('throttle:5,1');
 
     // Protected auth routes
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me',      [AuthController::class, 'me']);
     });
 });
 
 // ─── Protected Routes ──────────────────────────────────────────────────────
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+Route::middleware(['auth:api'])->prefix('v1')->group(function () {
 
     // ── My Business (current user's own business — no ID in URL) ───────────
     Route::get('/business',  [BusinessController::class, 'show']);

@@ -122,11 +122,11 @@ class BusinessService
      * Formula (0–100):
      *   - Tasks component (50%):   max(0, 50 - (overdue_tasks / total_tasks) * 50)
      *   - Renewals component (50%): max(0, 50 - (overdue_renewals / total_renewals) * 50)
-     *   - If no tasks/renewals exist that sub-score is full (50).
+     *   - A score is unavailable until the business has at least one task or renewal.
      *
      * Score is persisted back to the business record.
      */
-    public function recalculateComplianceScore(Business $business): float
+    public function recalculateComplianceScore(Business $business): ?float
     {
         $businessId = (string) $business->_id;
 
@@ -136,7 +136,7 @@ class BusinessService
         $overdueTasks   = $tasks->where('status', \App\Models\Task::STATUS_OVERDUE)->count();
         $taskScore      = $totalTasks > 0
             ? max(0.0, 50.0 - ($overdueTasks / $totalTasks) * 50.0)
-            : 50.0;
+            : null;
 
         // Renewals component
         $renewals        = \App\Models\Renewal::where('business_id', $businessId)->get();
@@ -144,9 +144,18 @@ class BusinessService
         $overdueRenewals = $renewals->where('status', \App\Models\Renewal::STATUS_OVERDUE)->count();
         $renewalScore    = $totalRenewals > 0
             ? max(0.0, 50.0 - ($overdueRenewals / $totalRenewals) * 50.0)
-            : 50.0;
+            : null;
 
-        $score = round($taskScore + $renewalScore, 1);
+        if ($totalTasks === 0 && $totalRenewals === 0) {
+            $this->businessRepo->update($business, ['compliance_score' => null]);
+
+            return null;
+        }
+
+        // Score only the pillars that have been configured. This avoids treating
+        // an unconfigured pillar as automatically compliant.
+        $score = round(array_sum(array_filter([$taskScore, $renewalScore], fn ($value) => $value !== null))
+            / count(array_filter([$taskScore, $renewalScore], fn ($value) => $value !== null)) * 2, 1);
 
         $this->businessRepo->update($business, ['compliance_score' => $score]);
 
@@ -186,6 +195,7 @@ class BusinessService
 
         return [
             'compliance_score' => $score,
+            'has_compliance_data' => $totalTasks > 0 || $totalRenewals > 0,
             'business_id'      => $businessId,
             'tasks'            => [
                 'total'     => $totalTasks,
@@ -201,10 +211,10 @@ class BusinessService
             'score_breakdown'  => [
                 'tasks_score'    => $totalTasks > 0
                     ? max(0.0, round(50.0 - ($overdueTasks / $totalTasks) * 50.0, 1))
-                    : 50.0,
+                    : null,
                 'renewals_score' => $totalRenewals > 0
                     ? max(0.0, round(50.0 - ($overdueRenewals / $totalRenewals) * 50.0, 1))
-                    : 50.0,
+                    : null,
             ],
         ];
     }
