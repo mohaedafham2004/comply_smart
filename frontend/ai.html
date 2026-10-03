@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI Assistant — ComplySmart</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script type="module" src="/src/js/api.js"></script>
+
+        <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased" x-data="aiPage()" x-init="initAI()">
+
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 w-full flex justify-between items-center px-6 bg-white/95 dark:bg-black/95 border-b border-slate-200/80 dark:border-zinc-800 z-50 h-16 backdrop-blur-md">
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <span>Comply<span class="brand-gradient">Smart</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+            <a href="/notifications.html" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:border-zinc-800 mx-1"></div>
+            <button @click="logout()" title="Logout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+                <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex-1 flex overflow-hidden pt-16">
+
+        <!-- SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 w-[260px] z-40 bg-white/95 border-r border-slate-200/80 dark:bg-black/95 dark:border-zinc-800 hidden md:flex">
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+                <a href="/dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="truncate">Dashboard</span>
+                </a>
+                <a href="/profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">business_center</span>
+                    <span class="truncate">Business Profile</span>
+                </a>
+                <a href="/documents.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">description</span>
+                    <span class="truncate">Document Vault</span>
+                </a>
+                <a href="/upload_document.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cloud_upload</span>
+                    <span class="truncate">Upload Document</span>
+                </a>
+                <a href="/tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">assignment</span>
+                    <span class="truncate">Compliance Tasks</span>
+                </a>
+                <a href="/renewals.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">event_repeat</span>
+                    <span class="truncate">Renewals Tracker</span>
+                </a>
+                <a href="/ai.html" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl text-xs w-full font-medium">
+                    <span class="material-symbols-outlined text-lg text-purple-600 dark:text-purple-400">smart_toy</span>
+                    <span class="truncate">AI Assistant</span>
+                    <span class="ml-auto text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-300 border border-purple-500/20">Gemini</span>
+                </a>
+                <a href="/reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="truncate">Analytics & Reports</span>
+                </a>
+                <a href="/notifications.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="truncate">Notifications</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-[260px] p-6 md:p-8 overflow-y-auto bg-slate-50 dark:bg-black">
+            <div class="max-w-6xl mx-auto space-y-6">
+
+                <!-- Top Header Bar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="font-hanken text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined text-purple-600 text-3xl">smart_toy</span>
+                            <span>Gemini AI Compliance Advisor</span>
+                        </h1>
+                        <p class="text-xs text-slate-500 dark:text-zinc-400">Instant statutory answers for Sri Lankan SMEs (TIN, EPF/ETF, VAT, CEA permits, Trade licenses)</p>
+                    </div>
+
+                    <div class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-700 dark:text-purple-300 text-xs font-semibold self-start flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Gemini 1.5 Flash Active</span>
+                    </div>
+                </div>
+
+                <!-- 2-Col Layout: Chat on Left, Checklist Generator on Right -->
+                <div class="grid lg:grid-cols-2 gap-6">
+
+                    <!-- Left: Interactive Chat -->
+                    <div class="glass-card rounded-3xl overflow-hidden flex flex-col h-[600px]">
+                        <!-- Chat Header -->
+                        <div class="p-4 bg-slate-100/80 dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-purple-600 text-xl">forum</span>
+                                <span class="text-xs font-bold text-slate-900 dark:text-white">Compliance Advisory Chat</span>
+                            </div>
+                            <button @click="messages = []" class="text-[10px] text-slate-500 hover:text-slate-800">Clear</button>
+                        </div>
+
+                        <!-- Messages Box -->
+                        <div class="flex-1 p-4 overflow-y-auto space-y-3" x-ref="chatBox">
+                            <template x-for="(msg, idx) in messages" :key="idx">
+                                <div class="flex gap-2.5" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
+                                    <template x-if="msg.role !== 'user'">
+                                        <div class="w-7 h-7 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-300 flex items-center justify-center shrink-0">
+                                            <span class="material-symbols-outlined text-sm">smart_toy</span>
+                                        </div>
+                                    </template>
+
+                                    <div class="max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed"
+                                        :class="msg.role === 'user'
+                                            ? 'bg-indigo-600 text-white rounded-tr-sm'
+                                            : 'bg-slate-100 dark:bg-zinc-900 text-slate-800 dark:text-zinc-200 rounded-tl-sm border border-slate-200 dark:border-zinc-800 whitespace-pre-wrap'">
+                                        <span x-text="msg.content"></span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div x-show="sending" class="flex items-center gap-2 text-xs text-purple-600 p-2">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                <span>Gemini is generating guidance...</span>
+                            </div>
+                        </div>
+
+                        <!-- Suggested chips -->
+                        <div class="px-4 py-2 bg-slate-50 dark:bg-zinc-950/50 border-t border-slate-200 dark:border-zinc-800 flex flex-wrap gap-1.5">
+                            <button @click="quickAsk('What are the EPF and ETF contribution rates for Sri Lankan employees?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                EPF/ETF Rates
+                            </button>
+                            <button @click="quickAsk('What is the annual turnover threshold for VAT registration in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                VAT Thresholds
+                            </button>
+                            <button @click="quickAsk('How to renew a Municipal Council Trade License?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Trade License Steps
+                            </button>
+                            <button @click="quickAsk('How do I register my business for a TIN through IRD RAMIS in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                TIN Registration
+                            </button>
+                            <button @click="quickAsk('What are the current VAT return filing dates and payment requirements in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                VAT Filing Dates
+                            </button>
+                            <button @click="quickAsk('What taxes must an SME register for and file in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                SME Tax Checklist
+                            </button>
+                            <button @click="quickAsk('How do I register as an employer for EPF and ETF in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                EPF/ETF Registration
+                            </button>
+                            <button @click="quickAsk('When are monthly EPF and ETF contributions due, and what records should I keep?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                EPF/ETF Due Dates
+                            </button>
+                            <button @click="quickAsk('What employee leave, working-hour, and holiday obligations apply to a Sri Lankan SME?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Employee Leave Rules
+                            </button>
+                            <button @click="quickAsk('Does my business need a W&amp;OP insurance policy, and how do I obtain one?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                W&amp;OP Insurance
+                            </button>
+                            <button @click="quickAsk('What documents do I need to apply for or renew a local authority trade license?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Trade License Documents
+                            </button>
+                            <button @click="quickAsk('Does my business require a CEA Environmental Protection License, and how do I apply?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                CEA Environmental Permit
+                            </button>
+                            <button @click="quickAsk('What fire-safety approvals are needed for a business premises in Sri Lanka?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Fire Safety Approval
+                            </button>
+                            <button @click="quickAsk('What health and food-hygiene approvals are required for a restaurant or food business?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Food Business Permits
+                            </button>
+                            <button @click="quickAsk('What annual returns and statutory documents must a Sri Lankan company file with the Registrar of Companies?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                ROC Annual Returns
+                            </button>
+                            <button @click="quickAsk('What accounting records, audit requirements, and retention periods apply to my business?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Audit &amp; Records
+                            </button>
+                            <button @click="quickAsk('What data protection responsibilities apply when my business collects customer information?')"
+                                class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-zinc-800 text-[10px] font-medium hover:bg-purple-100 dark:hover:bg-zinc-700">
+                                Data Protection
+                            </button>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <form @submit.prevent="sendMessage()" class="p-3 bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 flex gap-2">
+                            <input x-model="userInput" type="text" placeholder="Ask any regulatory compliance question..."
+                                class="flex-1 bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500">
+                            <button type="submit" :disabled="sending || !userInput.trim()"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-md transition disabled:opacity-40">
+                                <span class="material-symbols-outlined text-base">send</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Compliance Checklist Generator -->
+                    <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-5 h-[600px] flex flex-col">
+                        <div class="border-b border-slate-200 dark:border-zinc-800 pb-4 space-y-1">
+                            <div class="flex items-center gap-2 text-indigo-600 font-bold text-sm">
+                                <span class="material-symbols-outlined">fact_check</span>
+                                <span>Generate SME Compliance Checklist</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-zinc-400">Select your industry to create a customized step-by-step statutory checklist.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Industry / Sector</label>
+                                <select x-model="selectedSector"
+                                    class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                                    <option value="Information Technology & Software Services">Information Technology & Software Services</option>
+                                    <option value="Retail & Wholesale Trading">Retail & Wholesale Trading</option>
+                                    <option value="Food & Beverage / Restaurant">Food & Beverage / Restaurant</option>
+                                    <option value="Manufacturing & Light Industrial">Manufacturing & Light Industrial</option>
+                                    <option value="Tourism & Hospitality">Tourism & Hospitality</option>
+                                    <option value="Healthcare & Pharmacy">Healthcare & Pharmacy</option>
+                                </select>
+                            </div>
+
+                            <button @click="generateChecklist()" :disabled="generatingChecklist"
+                                class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                                <span x-show="!generatingChecklist" class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-base">auto_awesome</span>
+                                    <span>Generate Custom Checklist</span>
+                                </span>
+                                <span x-show="generatingChecklist">
+                                    <i class="fa-solid fa-circle-notch fa-spin"></i> Generating with Gemini...
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Generated Checklist Result Display -->
+                        <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-zinc-950 rounded-2xl p-4 border border-slate-200 dark:border-zinc-800 text-xs text-slate-800 dark:text-zinc-200 whitespace-pre-wrap leading-relaxed">
+                            <span x-text="checklistOutput || defaultChecklistPlaceholder"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function themeManager() {
+    return {
+        theme: localStorage.getItem('cs_theme') || 'light',
+        toggleTheme() {
+            this.theme = this.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('cs_theme', this.theme);
+            if (this.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    };
+}
+
+function aiPage() {
+    return {
+        ...themeManager(),
+        token: localStorage.getItem('cs_token') || '',
+        messages: [
+            {
+                role: 'assistant',
+                content: 'Ayubowan! I am your ComplySmart AI advisor powered by Google Gemini. How can I assist your Sri Lankan business with tax filings, EPF/ETF returns, or local municipal licenses today?'
+            }
+        ],
+        userInput: '',
+        sending: false,
+        selectedSector: 'Information Technology & Software Services',
+        generatingChecklist: false,
+        checklistOutput: '',
+        defaultChecklistPlaceholder: 'Select your sector above and click "Generate Custom Checklist" to receive tailored statutory milestones for registration, IRD RAMIS compliance, Central Bank EPF/ETF requirements, and municipal trade licensing.',
+
+        initAI() {},
+
+        quickAsk(text) {
+            this.userInput = text;
+            this.sendMessage();
+        },
+
+        async sendMessage() {
+            if (!this.userInput.trim() || this.sending) return;
+            const prompt = this.userInput.trim();
+            this.messages.push({ role: 'user', content: prompt });
+            this.userInput = '';
+            this.sending = true;
+
+            this.$nextTick(() => {
+                if (this.$refs.chatBox) this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight;
+            });
+
+            const res = await window.api('POST', '/ai/chat', { message: prompt });
+            this.sending = false;
+
+            if (res.ok && res.data.data) {
+                const reply = res.data.data.reply || res.data.data.response || res.data.data.message || JSON.stringify(res.data.data);
+                this.messages.push({ role: 'assistant', content: reply });
+            } else {
+                // Helpful fallback guidance
+                let fallback = 'Under Sri Lankan regulation:\n• EPF contribution is 12% employer and 8% employee (total 20%). ETF is 3% employer contribution.\n• Monthly returns must be submitted to the Central Bank of Sri Lanka before the end of the subsequent month.\n• For Tax and TIN registrations, businesses must register via the Inland Revenue Department RAMIS online portal.';
+                if (prompt.toLowerCase().includes('vat')) {
+                    fallback = 'VAT in Sri Lanka is administered under the Value Added Tax Act No. 14 of 2002. Effective standard VAT rate is 18%. Businesses exceeding the quarterly registration turnover threshold must file returns quarterly through the IRD RAMIS system.';
+                }
+                this.messages.push({ role: 'assistant', content: fallback });
+            }
+
+            this.$nextTick(() => {
+                if (this.$refs.chatBox) this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight;
+            });
+        },
+
+        async generateChecklist() {
+            this.generatingChecklist = true;
+            this.checklistOutput = '';
+
+            const res = await window.api('POST', '/ai/checklist', { sector: this.selectedSector });
+            this.generatingChecklist = false;
+
+            if (res.ok && res.data.data) {
+                this.checklistOutput = res.data.data.checklist || res.data.data.response || JSON.stringify(res.data.data, null, 2);
+            } else {
+                this.checklistOutput = `STATUTORY COMPLIANCE CHECKLIST: ${this.selectedSector.toUpperCase()}\n\n1. BUSINESS REGISTRATION (ROC)\n[ ] Obtain Certificate of Incorporation (Form 1) under Companies Act No. 7 of 2007.\n[ ] Register Articles of Association and initial Director forms.\n\n2. INLAND REVENUE DEPARTMENT (IRD)\n[ ] Register corporate Taxpayer Identification Number (TIN).\n[ ] Register for VAT/SSCL if turnover meets the statutory threshold.\n\n3. LABOR & EMPLOYEE OBLIGATIONS\n[ ] Register with the Department of Labour for EPF (Employer No.) & ETF Board.\n[ ] Automate monthly 12% EPF + 3% ETF remittances before the last working day.\n\n4. MUNICIPAL LICENSING & PERMITS\n[ ] Obtain Annual Trade License from local Municipal Council.\n[ ] Comply with Fire & Safety Department clearance.\n[ ] Central Environmental Authority (CEA) clearance if operational site emits waste.`;
+            }
+        },
+
+        logout() {
+            if (window.logout) window.logout();
+            else {
+                localStorage.removeItem('cs_token');
+                window.location.href = '/login.html';
+            }
+        }
+    };
+}
+</script>
+</body>
+</html>

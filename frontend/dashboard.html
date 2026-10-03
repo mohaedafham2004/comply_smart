@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard — ComplySmart</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script type="module" src="/src/js/api.js"></script>
+
+        <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased" x-data="dashboardPage()" x-init="initDashboard()">
+
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 w-full flex justify-between items-center px-6 bg-white/95 dark:bg-black/95 border-b border-slate-200/80 dark:border-zinc-800 z-50 h-16 backdrop-blur-md">
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <span>Comply<span class="brand-gradient">Smart</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center bg-slate-100 dark:bg-zinc-900/90 px-4 py-1.5 rounded-full border border-slate-200 dark:border-zinc-800 w-72">
+                <span class="material-symbols-outlined text-slate-400 dark:text-zinc-500 text-xl">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-xs text-slate-800 dark:text-zinc-200 w-full ml-2 focus:outline-none" placeholder="Search compliance items..." type="text"/>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+
+            <a href="/notifications.html" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full relative text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+                <span x-show="unreadCount > 0" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-600 rounded-full"></span>
+            </a>
+
+            <div class="h-6 w-px bg-slate-200 dark:border-zinc-800 mx-1"></div>
+
+            <template x-if="!token">
+                <div class="flex items-center gap-2">
+                    <a href="/login.html" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:text-slate-900">Sign In</a>
+                    <a href="/register.html" class="px-4 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-full hover:bg-indigo-500 shadow-md">Register</a>
+                </div>
+            </template>
+
+            <template x-if="token">
+                <div class="flex items-center gap-3 pl-1">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-slate-900 dark:text-white" x-text="user?.name || 'Owner'"></p>
+                        <p class="text-[10px] text-slate-500 dark:text-zinc-400 capitalize" x-text="user?.role || 'Owner'"></p>
+                    </div>
+                    <a href="/profile.html" class="w-9 h-9 rounded-full bg-indigo-600/10 dark:bg-zinc-800 text-indigo-600 dark:text-white border border-indigo-200 dark:border-zinc-700 flex items-center justify-center font-bold text-xs shadow-md">
+                        <span x-text="user?.name ? user.name.charAt(0).toUpperCase() : 'U'"></span>
+                    </a>
+                    <button @click="logout()" title="Logout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+                        <span class="material-symbols-outlined text-lg">logout</span>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex-1 flex overflow-hidden pt-16">
+
+        <!-- SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 w-[260px] z-40 bg-white/95 border-r border-slate-200/80 dark:bg-black/95 dark:border-zinc-800 hidden md:flex">
+            <!-- Business Info Banner -->
+            <div class="px-4 mb-4">
+                <div class="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 flex items-center justify-between">
+                    <div class="min-w-0 flex-1">
+                        <div class="text-xs font-bold text-slate-900 dark:text-white truncate" x-text="business?.name || (user?.name ? user.name + '\'s Business' : 'My Business')"></div>
+                        <div class="text-[10px] text-indigo-600 dark:text-zinc-400 font-semibold truncate capitalize" x-text="business?.type ? business.type.replace('_',' ') : 'SME Profile'"></div>
+                    </div>
+                    <a href="/profile.html" class="w-7 h-7 rounded-xl bg-indigo-600/10 text-indigo-600 hover:bg-indigo-600 hover:text-white dark:bg-zinc-800 dark:text-zinc-300 flex items-center justify-center text-xs transition">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+                <a href="/dashboard.html" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl text-xs w-full font-medium">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="truncate">Dashboard</span>
+                </a>
+
+                <a href="/profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">business_center</span>
+                    <span class="truncate">Business Profile</span>
+                </a>
+
+                <a href="/documents.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">description</span>
+                    <span class="truncate">Document Vault</span>
+                </a>
+
+                <a href="/upload_document.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cloud_upload</span>
+                    <span class="truncate">Upload Document</span>
+                </a>
+
+                <a href="/tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">assignment</span>
+                    <span class="truncate">Compliance Tasks</span>
+                </a>
+
+                <a href="/renewals.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">event_repeat</span>
+                    <span class="truncate">Renewals Tracker</span>
+                </a>
+
+                <a href="/ai.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-purple-600 dark:text-purple-400">smart_toy</span>
+                    <span class="truncate">AI Assistant</span>
+                    <span class="ml-auto text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-300 border border-purple-500/20">Gemini</span>
+                </a>
+
+                <a href="/reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="truncate">Analytics & Reports</span>
+                </a>
+
+                <a href="/notifications.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="truncate">Notifications</span>
+                    <span x-show="unreadCount > 0" class="ml-auto px-2 py-0.5 text-[10px] font-bold bg-rose-600 text-white rounded-full shadow-sm" x-text="unreadCount"></span>
+                </a>
+            </nav>
+
+            <div class="px-3 pt-4 border-t border-slate-200/80 dark:border-zinc-800 space-y-1">
+                <a href="/profile.html" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">settings</span>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-[260px] p-6 md:p-8 overflow-y-auto bg-slate-50 dark:bg-black">
+            <div class="max-w-6xl mx-auto space-y-6">
+
+                <!-- Demo Notice for guest users -->
+                <template x-if="!token">
+                    <div class="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-2.5 text-indigo-900 dark:text-indigo-200">
+                            <span class="material-symbols-outlined text-lg text-indigo-600 dark:text-indigo-400">info</span>
+                            <span>Exploring in <strong>Demo Mode</strong>. Sign in or register to connect your actual business data to the live MongoDB database.</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <a href="/login.html" class="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 text-slate-800 dark:text-white border border-slate-200 dark:border-zinc-700 font-bold hover:bg-slate-50">Sign In</a>
+                            <a href="/register.html" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-500">Register</a>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Top Business Greeting & Score Banner -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="space-y-2 z-10">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 capitalize"
+                                x-text="business?.type ? business.type.replace('_',' ') : 'SME Profile'">
+                            </span>
+                            <span class="text-xs text-slate-500 dark:text-zinc-400 font-medium" x-text="business?.registration_no ? ('BRN: ' + business.registration_no) : 'BRN: Pending Registration'"></span>
+                        </div>
+
+                        <h1 class="font-hanken text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            Welcome back, <span class="brand-gradient" x-text="user?.name || 'Business Owner'"></span>
+                        </h1>
+
+                        <p class="text-xs text-slate-500 dark:text-zinc-400">
+                            Real-time compliance health & regulatory tracking for Sri Lanka (TIN, EPF/ETF, Trade Licensure).
+                        </p>
+                    </div>
+
+                    <!-- Live Compliance Gauge -->
+                    <div class="glass-card p-4 rounded-2xl flex items-center gap-4 border-indigo-500/30 shrink-0 z-10">
+                        <div class="relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-slate-200 dark:text-zinc-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="text-indigo-600 dark:text-white transition-all duration-1000" stroke-dasharray="100" :stroke-dashoffset="100 - (scoreData?.compliance_score ?? 0)" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="absolute font-extrabold text-sm text-slate-900 dark:text-white" x-text="(scoreData?.compliance_score ?? 0) + '%'"></span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-semibold text-slate-600 dark:text-zinc-300">Compliance Health</div>
+                            <div class="text-[11px] font-bold mt-0.5"
+                                :class="{
+                                    'text-emerald-600 dark:text-emerald-400': (scoreData?.compliance_score ?? 0) >= 80,
+                                    'text-amber-600 dark:text-amber-400': (scoreData?.compliance_score ?? 0) >= 50 && (scoreData?.compliance_score ?? 0) < 80,
+                                    'text-rose-600 dark:text-rose-400': (scoreData?.compliance_score ?? 0) < 50
+                                }"
+                                x-text="getHealthStatus(scoreData?.compliance_score ?? 0)">
+                            </div>
+                            <button @click="fetchScore()" class="text-[10px] text-slate-500 hover:text-indigo-600 dark:hover:text-white transition mt-1 font-medium flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">refresh</span> Recalculate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 KPI Bento Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-card p-5 rounded-3xl space-y-2 border-l-4 border-l-indigo-600">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                            <span>Compliance Score</span>
+                            <span class="material-symbols-outlined text-indigo-500 text-lg">donut_large</span>
+                        </div>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-white" x-text="(scoreData?.compliance_score ?? 0) + '%'"></div>
+                        <div class="text-[11px] text-indigo-600 dark:text-zinc-400 font-medium" x-text="getHealthStatus(scoreData?.compliance_score ?? 0)"></div>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-3xl space-y-2 border-l-4 border-l-emerald-600">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                            <span>Pending Tasks</span>
+                            <span class="material-symbols-outlined text-emerald-500 text-lg">task_alt</span>
+                        </div>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-white" x-text="recentTasks.filter(t => t.status !== 'completed').length"></div>
+                        <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium" x-text="recentTasks.filter(t => t.status !== 'completed').length ? (recentTasks.filter(t => t.status !== 'completed').length + ' actionable items') : 'All tasks cleared'"></div>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-3xl space-y-2 border-l-4 border-l-amber-500">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                            <span>Upcoming Renewals</span>
+                            <span class="material-symbols-outlined text-amber-500 text-lg">event_repeat</span>
+                        </div>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-white" x-text="upcomingRenewals.length"></div>
+                        <div class="text-[11px] text-amber-600 dark:text-amber-400 font-medium" x-text="upcomingRenewals.length ? 'Tracked statutory deadlines' : 'No upcoming renewals'"></div>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-3xl space-y-2 border-l-4 border-l-purple-600">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
+                            <span>Vault Documents</span>
+                            <span class="material-symbols-outlined text-purple-500 text-lg">folder_shared</span>
+                        </div>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-white" x-text="recentDocs.length"></div>
+                        <div class="text-[11px] text-purple-600 dark:text-purple-400 font-medium" x-text="recentDocs.length ? (recentDocs.length + ' documents in vault') : 'Vault empty'"></div>
+                    </div>
+                </div>
+
+                <!-- 2-Col Main Grid: Recent Documents & Tasks -->
+                <div class="grid lg:grid-cols-3 gap-6">
+
+                    <!-- Left 2-Cols: Documents & Tasks -->
+                    <div class="lg:col-span-2 space-y-6">
+
+                        <!-- Document Vault Preview -->
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-indigo-500 dark:text-zinc-400">folder_open</span>
+                                    <span>Recent Vault Documents</span>
+                                </h3>
+                                <div class="flex items-center gap-2">
+                                    <a href="/upload_document.html" class="px-3 py-1 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm">+ Upload</a>
+                                    <a href="/documents.html" class="text-xs font-semibold text-indigo-600 dark:text-zinc-300 hover:underline">View All →</a>
+                                </div>
+                            </div>
+
+                            <template x-if="recentDocs.length > 0">
+                                <div class="space-y-2">
+                                    <template x-for="doc in recentDocs.slice(0, 3)" :key="doc._id || doc.id || doc.title">
+                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-between gap-3">
+                                            <div class="flex items-center gap-3 min-w-0">
+                                                <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-zinc-800 dark:text-zinc-300 flex items-center justify-center shrink-0">
+                                                    <span class="material-symbols-outlined text-lg">description</span>
+                                                </div>
+                                                <div class="min-w-0 space-y-0.5">
+                                                    <div class="text-xs font-bold text-slate-900 dark:text-white truncate" x-text="doc.title"></div>
+                                                    <div class="text-[10px] text-slate-500 dark:text-zinc-400 capitalize" x-text="(doc.category || 'general') + ' • ' + (doc.ocr_status ? 'OCR: ' + doc.ocr_status : 'Verified')"></div>
+                                                </div>
+                                            </div>
+                                            <a :href="'/document_details.html?id=' + (doc._id || doc.id)" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 text-xs font-semibold text-slate-800 dark:text-zinc-200 transition shrink-0">
+                                                Inspect
+                                            </a>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="recentDocs.length === 0">
+                                <div class="p-8 rounded-2xl bg-slate-50/50 dark:bg-zinc-900/40 border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-2">
+                                    <span class="material-symbols-outlined text-3xl text-slate-400 dark:text-zinc-600">inventory_2</span>
+                                    <div class="text-xs font-semibold text-slate-700 dark:text-zinc-300">No documents uploaded yet</div>
+                                    <p class="text-[11px] text-slate-500 dark:text-zinc-400">Upload business registration, tax certificates, or statutory licenses.</p>
+                                    <div class="pt-2">
+                                        <a href="/upload_document.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm">
+                                            <span class="material-symbols-outlined text-sm">cloud_upload</span> Upload First Document
+                                        </a>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Compliance Tasks -->
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-emerald-500 dark:text-zinc-400">task</span>
+                                    <span>Compliance Action Items</span>
+                                </h3>
+                                <a href="/tasks.html" class="text-xs font-semibold text-emerald-600 dark:text-zinc-300 hover:underline">Manage Tasks →</a>
+                            </div>
+
+                            <template x-if="recentTasks.length > 0">
+                                <div class="space-y-2">
+                                    <template x-for="task in recentTasks.slice(0, 3)" :key="task._id || task.id || task.title">
+                                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-between gap-3">
+                                            <div class="space-y-0.5 min-w-0">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs font-bold text-slate-900 dark:text-white truncate" x-text="task.title"></span>
+                                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase"
+                                                        :class="{
+                                                            'bg-rose-500/20 text-rose-600 dark:text-rose-300': task.status === 'overdue',
+                                                            'bg-amber-500/20 text-amber-600 dark:text-amber-300': task.status === 'pending',
+                                                            'bg-sky-500/20 text-sky-600 dark:text-sky-300': task.status === 'in_progress',
+                                                            'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300': task.status === 'completed',
+                                                        }"
+                                                        x-text="task.status?.replace('_',' ')">
+                                                    </span>
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 dark:text-zinc-400" x-text="task.due_date ? 'Due: ' + new Date(task.due_date).toLocaleDateString('en-GB') : 'No due date'"></div>
+                                            </div>
+                                            <a href="/tasks.html" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-zinc-800 hover:bg-slate-300 text-xs font-semibold text-slate-800 dark:text-zinc-200 transition shrink-0">
+                                                Open
+                                            </a>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="recentTasks.length === 0">
+                                <div class="p-8 rounded-2xl bg-slate-50/50 dark:bg-zinc-900/40 border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-2">
+                                    <span class="material-symbols-outlined text-3xl text-slate-400 dark:text-zinc-600">task_alt</span>
+                                    <div class="text-xs font-semibold text-slate-700 dark:text-zinc-300">All compliance tasks clear</div>
+                                    <p class="text-[11px] text-slate-500 dark:text-zinc-400">No pending statutory compliance action items.</p>
+                                    <div class="pt-2">
+                                        <a href="/tasks.html" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm">
+                                            <span class="material-symbols-outlined text-sm">add</span> Create Task
+                                        </a>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Right 1-Col: Renewals & AI Teaser -->
+                    <div class="space-y-6">
+
+                        <!-- Renewals Card -->
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-amber-500 dark:text-zinc-400">event_repeat</span>
+                                <span>Upcoming Renewals (30d)</span>
+                            </h3>
+
+                            <template x-if="upcomingRenewals.length > 0">
+                                <div class="space-y-2.5">
+                                    <template x-for="r in upcomingRenewals.slice(0, 3)" :key="r._id || r.id || r.title">
+                                        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 dark:bg-zinc-900 dark:border-zinc-800 text-xs space-y-1">
+                                            <div class="flex items-center justify-between text-amber-900 dark:text-zinc-200 font-bold">
+                                                <span class="truncate" x-text="r.title"></span>
+                                                <span class="text-[10px] text-amber-700 dark:text-zinc-400 font-mono" x-text="r.due_date ? new Date(r.due_date).toLocaleDateString('en-GB') : 'Upcoming'"></span>
+                                            </div>
+                                            <div class="text-[10px] text-amber-700 dark:text-zinc-400 capitalize" x-text="r.renewal_type?.replace('_',' ') || 'Annual Review'"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="upcomingRenewals.length === 0">
+                                <div class="p-6 rounded-2xl bg-slate-50/50 dark:bg-zinc-900/40 border border-dashed border-slate-200 dark:border-zinc-800 text-center space-y-1.5">
+                                    <span class="material-symbols-outlined text-2xl text-slate-400 dark:text-zinc-600">event_available</span>
+                                    <div class="text-xs font-semibold text-slate-700 dark:text-zinc-300">No upcoming renewals</div>
+                                    <p class="text-[10px] text-slate-500 dark:text-zinc-400">Track deadlines for trade licenses, tax filings, or permits.</p>
+                                </div>
+                            </template>
+
+                            <a href="/renewals.html" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl text-xs text-center font-bold text-slate-700 dark:text-zinc-200 block transition">
+                                View All Renewals
+                            </a>
+                        </div>
+
+                        <!-- AI Advisor Card -->
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <div class="flex items-center gap-2 text-purple-600 dark:text-zinc-200 font-bold text-sm">
+                                <span class="material-symbols-outlined text-purple-500 dark:text-zinc-300">smart_toy</span>
+                                <span>ComplySmart AI Advisor</span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                                Get instant compliance advice on EPF/ETF returns, IRD VAT exemptions, or local municipal trade licenses.
+                            </p>
+                            <a href="/ai.html" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl text-center block transition shadow-md">
+                                Launch Gemini Assistant
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function themeManager() {
+    return {
+        theme: localStorage.getItem('cs_theme') || 'light',
+        toggleTheme() {
+            this.theme = this.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('cs_theme', this.theme);
+            if (this.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    };
+}
+
+function dashboardPage() {
+    return {
+        ...themeManager(),
+        token: localStorage.getItem('cs_token') || '',
+        user: JSON.parse(localStorage.getItem('cs_user') || 'null'),
+        business: JSON.parse(localStorage.getItem('cs_business') || 'null'),
+        unreadCount: 0,
+        scoreData: null,
+        recentDocs: [],
+        recentTasks: [],
+        upcomingRenewals: [],
+
+        async initDashboard() {
+            if (this.token) {
+                const meRes = await window.api('GET', '/auth/me');
+                if (meRes.ok && meRes.data.data) {
+                    this.user = meRes.data.data.user || meRes.data.data;
+                    this.business = meRes.data.data.business || this.business;
+                    localStorage.setItem('cs_user', JSON.stringify(this.user));
+                    if (this.business) localStorage.setItem('cs_business', JSON.stringify(this.business));
+                }
+                await Promise.all([
+                    this.fetchScore(),
+                    this.fetchDocs(),
+                    this.fetchTasks(),
+                    this.fetchRenewals(),
+                    this.fetchNotifications()
+                ]);
+            }
+        },
+
+        async fetchScore() {
+            const res = await window.api('GET', '/business/compliance-score');
+            if (res.ok) this.scoreData = res.data.data;
+        },
+
+        async fetchDocs() {
+            const res = await window.api('GET', '/documents');
+            if (res.ok && res.data.data) this.recentDocs = res.data.data;
+        },
+
+        async fetchTasks() {
+            const res = await window.api('GET', '/tasks');
+            if (res.ok && res.data.data) this.recentTasks = res.data.data;
+        },
+
+        async fetchRenewals() {
+            const res = await window.api('GET', '/renewals/upcoming?days=30');
+            if (res.ok && res.data.data) this.upcomingRenewals = res.data.data;
+        },
+
+        async fetchNotifications() {
+            const res = await window.api('GET', '/notifications?unread_only=1');
+            if (res.ok) {
+                this.unreadCount = res.data.meta?.unread ?? (res.data.data ? res.data.data.length : 0);
+            }
+        },
+
+        getHealthStatus(score) {
+            if (!score || score === 0) return 'New Profile (0%)';
+            if (score >= 85) return 'Excellent';
+            if (score >= 70) return 'Stable Range';
+            if (score >= 50) return 'Attention Needed';
+            return 'Action Required';
+        },
+
+        logout() {
+            if (window.logout) window.logout();
+            else {
+                localStorage.removeItem('cs_token');
+                localStorage.removeItem('cs_user');
+                localStorage.removeItem('cs_business');
+                window.location.href = '/login.html';
+            }
+        }
+    };
+}
+</script>
+</body>
+</html>
