@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Detail View - ComplySmart</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1b1b1d",
+                        "surface-tint": "#565e74",
+                        "surface-variant": "#e4e2e4",
+                        "surface-container-highest": "#e4e2e4",
+                        "surface-bright": "#fcf8fa",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container": "#f0edef",
+                        "on-background": "#1b1b1d",
+                        "on-tertiary-fixed-variant": "#574425",
+                        "inverse-primary": "#bec6e0",
+                        "primary-container": "#131b2e",
+                        "on-primary-container": "#7c839b",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary": "#000000",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary-fixed-dim": "#dec29a",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-container": "#316bf3",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#98805d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "surface-dim": "#dcd9db",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed": "#271901",
+                        "inverse-surface": "#303032",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "background": "#fcf8fa",
+                        "outline": "#76777d",
+                        "surface": "#fcf8fa",
+                        "tertiary-fixed": "#fcdeb5",
+                        "tertiary": "#000000",
+                        "surface-container-high": "#eae7e9",
+                        "surface-container-low": "#f6f3f5",
+                        "secondary": "#0051d5",
+                        "secondary-fixed": "#dbe1ff",
+                        "inverse-on-surface": "#f3f0f2",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#271901",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "base": "4px",
+                        "container-max": "1440px",
+                        "lg": "40px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "display": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "metadata": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "metadata": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .slide-over-enter { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-over-enter-active { transform: translateX(0); }
+        .overlay-fade { background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
+        .glass-ocr { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px border-outline-variant; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full flex justify-between items-center px-md py-xs bg-surface-lowest border-b border-outline-variant z-50">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">ComplySmart</span>
+<div class="hidden md:flex gap-md ml-lg">
+<a class="text-on-surface-variant hover:bg-surface-container-low px-sm py-xs transition-colors font-label-sm text-label-sm" href="#">Compliance Dashboard</a>
+<a class="text-secondary font-bold border-b-2 border-secondary px-sm py-xs font-label-sm text-label-sm" href="#">Documents</a>
+<a class="text-on-surface-variant hover:bg-surface-container-low px-sm py-xs transition-colors font-label-sm text-label-sm" href="#">Audit Logs</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary cursor-pointer p-xs hover:bg-surface-container-low rounded-full transition-all">notifications</span>
+<span class="material-symbols-outlined text-secondary cursor-pointer p-xs hover:bg-surface-container-low rounded-full transition-all">help</span>
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 border border-secondary flex items-center justify-center">
+<span class="text-secondary font-bold text-[12px]">JS</span>
+</div>
+</div>
+</nav>
+<!-- Sidebar (Visible on Desktop) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-xl pb-md w-[260px] bg-surface-container-low border-r border-outline-variant z-40 hidden md:flex">
+<div class="px-md mb-lg mt-md">
+<h2 class="text-headline-md font-headline-md font-extrabold text-primary">Enterprise</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-60">Legal Compliance Edition</p>
+</div>
+<nav class="flex-1 px-sm space-y-xs">
+<div class="group flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer rounded-lg">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</div>
+<div class="group flex items-center gap-md px-md py-sm text-secondary font-bold bg-secondary-container/10 border-l-4 border-secondary transition-all cursor-pointer rounded-r-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-label-sm text-label-sm">Documents</span>
+</div>
+<div class="group flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer rounded-lg">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-sm text-label-sm">Tasks</span>
+</div>
+<div class="group flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer rounded-lg">
+<span class="material-symbols-outlined">event_repeat</span>
+<span class="font-label-sm text-label-sm">Renewals</span>
+</div>
+<div class="group flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer rounded-lg">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</div>
+</nav>
+<div class="px-sm pt-md border-t border-outline-variant">
+<div class="group flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas (Background Document List) -->
+<main class="md:ml-[260px] pt-xl px-md min-h-screen bg-surface">
+<div class="max-w-container-max mx-auto py-md">
+<header class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Document Repository</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Manage and review your organization's legal compliance documents.</p>
+</div>
+<button class="bg-secondary text-on-secondary px-md py-sm rounded-lg flex items-center gap-xs font-label-sm text-label-sm hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                    Upload Document
+                </button>
+</header>
+<!-- Mock Table Background -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">
+<th class="px-md py-md">Name</th>
+<th class="px-md py-md">Type</th>
+<th class="px-md py-md">Upload Date</th>
+<th class="px-md py-md">Status</th>
+<th class="px-md py-md text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-md font-body-md">
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer" onclick="toggleSlideOver()">
+<td class="px-md py-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">description</span>
+<span class="font-semibold">Privacy_Policy_v2.4.pdf</span>
+</td>
+<td class="px-md py-md">Legal Contract</td>
+<td class="px-md py-md">Oct 24, 2023</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container/10 text-secondary text-[12px] font-bold px-sm py-1 rounded-full">Compliant</span>
+</td>
+<td class="px-md py-md text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">visibility</span>
+</td>
+</tr>
+<!-- Repeat rows for visual weight -->
+<tr class="opacity-40"><td class="px-md py-md" colspan="5">... Additional system data ...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Slide-over Overlay -->
+<div class="fixed inset-0 z-[60] overlay-fade hidden" id="slideOverOverlay" onclick="toggleSlideOver()"></div>
+<!-- Slide-over Panel -->
+<div class="fixed right-0 top-0 h-full w-full sm:w-[500px] md:w-[600px] bg-surface-lowest shadow-2xl z-[70] slide-over-enter border-l border-outline-variant flex flex-col hidden" id="slideOverPanel">
+<!-- Header -->
+<div class="flex items-center justify-between px-md py-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="bg-secondary-container/10 p-xs rounded-lg">
+<span class="material-symbols-outlined text-secondary">description</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Document Details</h3>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors" onclick="toggleSlideOver()">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-md space-y-lg">
+<!-- File Preview Section -->
+<section>
+<div class="relative group bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden aspect-[4/3] flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center opacity-40" data-alt="A clean, minimalist high-fidelity PDF document preview displayed on a tablet-like surface. The document shows text columns and a subtle blue company seal. The lighting is bright and professional, following a modern corporate aesthetic with soft shadows and a neutral color palette of greys and white." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMXV3M_V1DqZSbghzDfEQOxqbUuTYEvKLzaseAXoHy78aNbnkVv1GIfj0ZR2cUtyh-z4Fmq5KEe36DBhu139VC4FKf-2xnvtJ1M-sTpqN_r6ui3Vg7vo3mvq2ze153LabA7xNCCX7AffKuoChvtXR7NoYnCKcv0-lIzjEiXTtmh513DFKei4bPw9tLo63t7EJUTd-0_TYPQA03drzifpFUCM3rrJLyzlEKwJHvaGJryF3y3I8VekVxbM-jIb0jtXE4IJ_Lhf2Sb3I')"></div>
+<div class="relative z-10 flex flex-col items-center gap-xs">
+<div class="w-16 h-20 bg-white shadow-lg rounded-sm border-t-4 border-secondary flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-display" style="font-variation-settings: 'FILL' 1;">markdown_copy</span>
+</div>
+<p class="text-label-sm font-label-sm text-secondary-fixed-dim bg-secondary px-sm py-1 rounded-full">PREVIEW MODE</p>
+</div>
+<!-- Hover Action -->
+<div class="absolute inset-0 bg-secondary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-surface-lowest text-secondary px-md py-sm rounded-full font-label-sm text-label-sm shadow-lg flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">open_in_full</span>
+                            Expand View
+                        </button>
+</div>
+</div>
+</section>
+<!-- Metadata Section -->
+<section class="grid grid-cols-2 gap-md">
+<div class="col-span-2 pb-sm border-b border-outline-variant">
+<label class="text-metadata font-metadata text-on-surface-variant uppercase tracking-widest block mb-1">Document Title</label>
+<p class="font-headline-md text-headline-md text-on-surface">Privacy_Policy_v2.4.pdf</p>
+</div>
+<div>
+<label class="text-metadata font-metadata text-on-surface-variant uppercase tracking-widest block mb-1">Category</label>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-fixed-variant">gavel</span>
+<p class="font-body-md text-body-md text-on-surface">Legal Compliance</p>
+</div>
+</div>
+<div>
+<label class="text-metadata font-metadata text-on-surface-variant uppercase tracking-widest block mb-1">File Size</label>
+<p class="font-body-md text-body-md text-on-surface">2.4 MB</p>
+</div>
+<div>
+<label class="text-metadata font-metadata text-on-surface-variant uppercase tracking-widest block mb-1">Upload Date</label>
+<p class="font-body-md text-body-md text-on-surface">Oct 24, 2023</p>
+</div>
+<div>
+<label class="text-metadata font-metadata text-on-surface-variant uppercase tracking-widest block mb-1 text-error">Expiry Date</label>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-error">event_busy</span>
+<p class="font-body-md text-body-md text-error font-semibold">Oct 24, 2024</p>
+</div>
+</div>
+</section>
+<!-- OCR Result Section -->
+<section>
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary">smart_toy</span>
+<h4 class="font-label-sm text-label-sm text-on-surface">OCR Extraction Result</h4>
+</div>
+<button class="text-secondary hover:bg-secondary-container/10 px-sm py-1 rounded transition-colors text-[12px] font-bold flex items-center gap-1" onclick="copyOcrText()">
+<span class="material-symbols-outlined text-[14px]" id="copyIcon">content_copy</span>
+<span id="copyText">Copy text</span>
+</button>
+</div>
+<div class="glass-ocr p-md rounded-xl border border-outline-variant relative group overflow-hidden">
+<!-- Texture/Depth -->
+<div class="absolute top-0 right-0 p-sm opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-display">translate</span>
+</div>
+<div class="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-outline">
+<pre class="font-body-md text-body-md text-on-surface-variant whitespace-pre-wrap leading-relaxed" id="ocrContent">Extracted text from document...
+
+This agreement ("Privacy Policy") governs the collection and use of personal data by ComplySmart Enterprise. 
+
+1. DATA COLLECTION
+We collect information that you provide directly to us when you create an account, participate in any interactive features of our services, or fill out a form.
+
+2. COMPLIANCE STANDARDS
+Our systems are designed to meet GDPR, CCPA, and SOC2 Type II requirements. Automated monitoring ensures that all uploaded documents are scanned for PII (Personally Identifiable Information) before storage.
+
+3. SECURITY MEASURES
+We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information.
+
+[END OF EXTRACT]</pre>
+</div>
+<!-- Gradient Fade Bottom -->
+<div class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-surface-lowest to-transparent pointer-events-none"></div>
+</div>
+<p class="mt-xs text-metadata font-metadata text-on-surface-variant flex items-center gap-1 italic">
+<span class="material-symbols-outlined text-[12px]">info</span>
+                    Accuracy: 98.4% • Scanned via SmartScan OCR v4
+                </p>
+</section>
+</div>
+<!-- Footer Actions -->
+<div class="p-md border-t border-outline-variant bg-surface-container-low flex gap-sm">
+<button class="flex-1 bg-secondary text-on-secondary px-md py-sm rounded-lg font-label-sm text-label-sm hover:shadow-lg transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                Download PDF
+            </button>
+<button class="flex-1 bg-surface-lowest text-on-surface border border-outline-variant px-md py-sm rounded-lg font-label-sm text-label-sm hover:bg-surface-container-high transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                Share Access
+            </button>
+<button class="bg-error-container/20 text-error p-sm rounded-lg hover:bg-error-container hover:text-on-error-container transition-all flex items-center justify-center">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        function toggleSlideOver() {
+            const panel = document.getElementById('slideOverPanel');
+            const overlay = document.getElementById('slideOverOverlay');
+            
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    panel.classList.add('slide-over-enter-active');
+                    overlay.style.opacity = '1';
+                }, 10);
+            } else {
+                panel.classList.remove('slide-over-enter-active');
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    panel.classList.add('hidden');
+                    overlay.classList.add('hidden');
+                }, 400);
+            }
+        }
+
+        function copyOcrText() {
+            const text = document.getElementById('ocrContent').innerText;
+            const btnText = document.getElementById('copyText');
+            const btnIcon = document.getElementById('copyIcon');
+            
+            navigator.clipboard.writeText(text).then(() => {
+                btnText.innerText = "Copied!";
+                btnIcon.innerText = "check";
+                btnIcon.style.color = "#10B981"; // success green
+                
+                setTimeout(() => {
+                    btnText.innerText = "Copy text";
+                    btnIcon.innerText = "content_copy";
+                    btnIcon.style.color = "";
+                }, 2000);
+            });
+        }
+    </script>
+</body></html>
