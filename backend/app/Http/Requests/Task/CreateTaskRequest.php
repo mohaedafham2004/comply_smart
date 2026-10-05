@@ -17,6 +17,7 @@ class CreateTaskRequest extends FormRequest
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category'    => ['nullable', 'string', 'max:100'],
+            'priority'    => ['nullable', 'string', 'in:low,medium,high,urgent'],
             'due_date'    => ['nullable', 'date'],
             'assigned_to' => ['nullable', 'string'],
         ];

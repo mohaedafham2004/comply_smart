@@ -17,11 +17,20 @@ class Task extends Model
     const STATUS_COMPLETED   = 'completed';
     const STATUS_OVERDUE     = 'overdue';
 
+    /**
+     * Valid priority values.
+     */
+    const PRIORITY_LOW    = 'low';
+    const PRIORITY_MEDIUM = 'medium';
+    const PRIORITY_HIGH   = 'high';
+    const PRIORITY_URGENT = 'urgent';
+
     protected $fillable = [
         'business_id',
         'title',
         'description',
         'category',
+        'priority',     // low | medium | high | urgent
         'due_date',
         'status',       // pending | in_progress | completed | overdue
         'assigned_to',  // user_id (nullable)

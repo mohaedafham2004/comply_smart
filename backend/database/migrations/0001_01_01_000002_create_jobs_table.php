@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
             $table->string('queue')->index();
             $table->longText('payload');
             $table->unsignedTinyInteger('attempts');
@@ -44,7 +44,7 @@ return new class extends Migration
             $table->timestamp('failed_at')->useCurrent();
         });
     }
-
+        
     /**
      * Reverse the migrations.
      */

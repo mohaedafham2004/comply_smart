@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Upload Document — ComplySmart</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="/api-global.js"></script>
+
+        <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased" x-data="uploadPage()" x-init="initUpload()">
+
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 w-full flex justify-between items-center px-6 bg-white/95 dark:bg-black/95 border-b border-slate-200/80 dark:border-zinc-800 z-50 h-16 backdrop-blur-md">
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <span>Comply<span class="brand-gradient">Smart</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+            <a href="/documents.html" class="text-xs font-semibold text-slate-600 dark:text-zinc-400 hover:underline">Vault</a>
+            <div class="h-6 w-px bg-slate-200 dark:border-zinc-800 mx-1"></div>
+            <button @click="logout()" title="Logout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+                <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex-1 flex overflow-hidden pt-16">
+
+        <!-- SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 w-[260px] z-40 bg-white/95 border-r border-slate-200/80 dark:bg-black/95 dark:border-zinc-800 hidden md:flex">
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+                <a href="/dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="truncate">Dashboard</span>
+                </a>
+                <a href="/profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">business_center</span>
+                    <span class="truncate">Business Profile</span>
+                </a>
+                <a href="/documents.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">description</span>
+                    <span class="truncate">Document Vault</span>
+                </a>
+                <a href="/upload_document.html" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl text-xs w-full font-medium">
+                    <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cloud_upload</span>
+                    <span class="truncate">Upload Document</span>
+                </a>
+                <a href="/tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">assignment</span>
+                    <span class="truncate">Compliance Tasks</span>
+                </a>
+                <a href="/renewals.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">event_repeat</span>
+                    <span class="truncate">Renewals Tracker</span>
+                </a>
+                <a href="/ai.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-purple-600 dark:text-purple-400">smart_toy</span>
+                    <span class="truncate">AI Assistant</span>
+                </a>
+                <a href="/reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="truncate">Analytics & Reports</span>
+                </a>
+                <a href="/notifications.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="truncate">Notifications</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-[260px] p-6 md:p-8 overflow-y-auto bg-slate-50 dark:bg-black">
+            <div class="max-w-2xl mx-auto space-y-6">
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="font-hanken text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Upload Compliance Document</h1>
+                        <p class="text-xs text-slate-500 dark:text-zinc-400">Certificates are securely encrypted, stored on Cloudinary, & scanned with Tesseract OCR</p>
+                    </div>
+                    <a href="/documents.html" class="text-xs font-semibold text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span>
+                        <span>Vault</span>
+                    </a>
+                </div>
+
+                <template x-if="error">
+                    <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2 font-semibold">
+                        <span class="material-symbols-outlined text-base text-rose-600 dark:text-rose-400 shrink-0">error</span>
+                        <span x-text="error"></span>
+                    </div>
+                </template>
+
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6">
+                    <form @submit.prevent="upload" class="space-y-5">
+                        
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Document Title *</label>
+                            <input x-model="form.title" type="text" required placeholder="e.g. Business Registration Certificate 2026"
+                                class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Category *</label>
+                                <select x-model="form.category" required
+                                    class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                                    <option value="registration">Business Registration (BRN)</option>
+                                    <option value="tax">Tax & Revenue (TIN/VAT)</option>
+                                    <option value="license">Trade License</option>
+                                    <option value="permit">Environmental / Health Permit</option>
+                                    <option value="labor">Labor / EPF & ETF</option>
+                                    <option value="health_safety">Health & Safety</option>
+                                    <option value="financial">Financial & Audit</option>
+                                    <option value="general">General</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Expiry Date (Optional)</label>
+                                <input x-model="form.expiry_date" type="date"
+                                    class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition">
+                            </div>
+                        </div>
+
+                        <!-- Dropzone -->
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Document File * (PDF, PNG, JPG)</label>
+                            <div class="border-2 border-dashed border-slate-300 dark:border-zinc-800 rounded-2xl p-8 text-center hover:border-indigo-500 transition cursor-pointer relative bg-slate-50/50 dark:bg-zinc-950/50"
+                                @click="$refs.fileInput.click()">
+                                <input type="file" x-ref="fileInput" @change="handleFileSelect" accept=".pdf,.png,.jpg,.jpeg" class="hidden"/>
+                                
+                                <div x-show="!selectedFile" class="space-y-2">
+                                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-zinc-300 flex items-center justify-center mx-auto">
+                                        <span class="material-symbols-outlined text-2xl">upload_file</span>
+                                    </div>
+                                    <div class="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                                        Click to browse or drag file here
+                                    </div>
+                                    <div class="text-[10px] text-slate-400">PDF, PNG, JPG up to 10MB</div>
+                                </div>
+
+                                <div x-show="selectedFile" class="flex items-center justify-center gap-3 py-1">
+                                    <span class="material-symbols-outlined text-3xl text-emerald-600">check_circle</span>
+                                    <div class="text-left">
+                                        <div class="text-xs font-bold text-slate-900 dark:text-white" x-text="selectedFile ? selectedFile.name : ''"></div>
+                                        <div class="text-[10px] text-slate-500" x-text="selectedFile ? (selectedFile.size / 1024).toFixed(1) + ' KB' : ''"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" :disabled="uploading"
+                            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50">
+                            <span x-show="!uploading" class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-base">cloud_upload</span>
+                                <span>Upload to Cloudinary & Run OCR</span>
+                            </span>
+                            <span x-show="uploading" class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-notch fa-spin text-sm"></i> Uploading & Queueing OCR...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function themeManager() {
+    return {
+        theme: localStorage.getItem('cs_theme') || 'light',
+        toggleTheme() {
+            this.theme = this.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('cs_theme', this.theme);
+            if (this.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    };
+}
+
+function uploadPage() {
+    return {
+        ...themeManager(),
+        form: {
+            title: '',
+            category: 'registration',
+            expiry_date: ''
+        },
+        selectedFile: null,
+        uploading: false,
+        error: '',
+
+        initUpload() {
+            const token = localStorage.getItem('cs_token');
+            if (!token) {
+                window.location.href = '/login.html';
+            }
+        },
+
+        handleFileSelect(e) {
+            if (e.target.files && e.target.files[0]) {
+                this.selectedFile = e.target.files[0];
+            }
+        },
+
+        async upload() {
+            if (!this.selectedFile) {
+                this.error = 'Please select a document file.';
+                return;
+            }
+
+            this.uploading = true;
+            this.error = '';
+
+            const formData = new FormData();
+            formData.append('title', this.form.title);
+            formData.append('category', this.form.category);
+            if (this.form.expiry_date) formData.append('expiry_date', this.form.expiry_date);
+            formData.append('file', this.selectedFile);
+
+            const res = await window.api('POST', '/documents', formData, true);
+            this.uploading = false;
+
+            if (res.status === 401) {
+                this.error = 'Your login session has expired. Redirecting to login...';
+                setTimeout(() => {
+                    localStorage.removeItem('cs_token');
+                    window.location.href = '/login.html';
+                }, 1500);
+                return;
+            }
+
+            if (res.ok && res.data && res.data.data) {
+                const docId = res.data.data._id || res.data.data.id;
+                window.location.href = `/document_details.html?id=${docId}`;
+            } else {
+                const errors = res.data?.errors;
+                if (errors && typeof errors === 'object') {
+                    const msgs = Object.values(errors).flat();
+                    this.error = msgs.join(' ') || res.data?.message || 'Failed to upload document.';
+                } else {
+                    this.error = res.data?.message || 'Failed to upload document.';
+                }
+            }
+        },
+
+        logout() {
+            if (window.logout) window.logout();
+            else {
+                localStorage.removeItem('cs_token');
+                window.location.href = '/login.html';
+            }
+        }
+    };
+}
+</script>
+</body>
+</html>

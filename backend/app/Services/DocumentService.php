@@ -33,16 +33,42 @@ class DocumentService
     {
         $this->assertBusinessOwnership($actor, $businessId);
 
-        // ── Cloudinary upload ─────────────────────────────────────────────────
-        /** @var CloudinarySDK $cloudinary */
-        $cloudinary   = app(CloudinarySDK::class);
-        $uploadResult = $cloudinary->uploadApi()->upload($file->getRealPath(), [
-            'folder'          => "complysmart/{$businessId}",
-            'resource_type'   => 'auto',
-            'use_filename'    => true,
-            'unique_filename' => true,
-            'tags'            => ['complysmart', $businessId],
-        ]);
+        // ── Cloudinary upload (with local storage fallback) ───────────────────
+        $cloudName     = config('cloudinary.cloud_name') ?: env('CLOUDINARY_CLOUD_NAME');
+        $apiKey        = config('cloudinary.api_key') ?: env('CLOUDINARY_API_KEY');
+        $hasCloudinary = !empty($cloudName) && !empty($apiKey) && $apiKey !== 'API_KEY' && $cloudName !== 'CLOUD_NAME';
+
+        $secureUrl = null;
+        $publicId  = null;
+
+        if ($hasCloudinary) {
+            try {
+                /** @var CloudinarySDK $cloudinary */
+                $cloudinary   = app(CloudinarySDK::class);
+                $uploadResult = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+                    'folder'          => "complysmart/{$businessId}",
+                    'resource_type'   => 'auto',
+                    'use_filename'    => true,
+                    'unique_filename' => true,
+                    'tags'            => ['complysmart', $businessId],
+                ]);
+                $secureUrl = $uploadResult['secure_url'] ?? null;
+                $publicId  = $uploadResult['public_id'] ?? null;
+            } catch (\Throwable $e) {
+                Log::warning("Cloudinary upload failed ({$e->getMessage()}). Storing file locally.");
+            }
+        }
+
+        // Local storage fallback if Cloudinary is not configured or failed
+        if (!$secureUrl) {
+            $ext      = $file->getClientOriginalExtension() ?: 'bin';
+            $filename = uniqid('doc_', true) . '.' . $ext;
+            $path     = $file->storeAs("documents/{$businessId}", $filename, 'public');
+
+            $appUrl    = rtrim(config('app.url') ?: 'http://localhost:8000', '/');
+            $secureUrl = "{$appUrl}/storage/{$path}";
+            $publicId  = "local:{$path}";
+        }
 
         $mimeType   = $file->getMimeType();
         $ocrStatus  = Document::supportsOcr($mimeType)
@@ -54,8 +80,8 @@ class DocumentService
             'business_id'          => $businessId,
             'title'                => $data['title'],
             'category'             => $data['category'],
-            'cloudinary_url'       => $uploadResult['secure_url'],
-            'cloudinary_public_id' => $uploadResult['public_id'],
+            'cloudinary_url'       => $secureUrl,
+            'cloudinary_public_id' => $publicId,
             'file_size'            => $file->getSize(),
             'mime_type'            => $mimeType,
             'original_filename'    => $file->getClientOriginalName(),
@@ -150,15 +176,20 @@ class DocumentService
     {
         $document = $this->findForUser($actor, $id);
 
-        // Delete from Cloudinary (non-fatal if it fails)
+        // Delete from Cloudinary or local storage (non-fatal if it fails)
         try {
             if ($document->cloudinary_public_id) {
-                /** @var CloudinarySDK $cloudinary */
-                $cloudinary = app(CloudinarySDK::class);
-                $cloudinary->uploadApi()->destroy($document->cloudinary_public_id);
+                if (str_starts_with($document->cloudinary_public_id, 'local:')) {
+                    $localPath = substr($document->cloudinary_public_id, 6);
+                    @unlink(storage_path("app/public/{$localPath}"));
+                } else {
+                    /** @var CloudinarySDK $cloudinary */
+                    $cloudinary = app(CloudinarySDK::class);
+                    $cloudinary->uploadApi()->destroy($document->cloudinary_public_id);
+                }
             }
         } catch (\Throwable $e) {
-            Log::warning("Cloudinary delete failed for {$document->cloudinary_public_id}: {$e->getMessage()}");
+            Log::warning("File delete failed for {$document->cloudinary_public_id}: {$e->getMessage()}");
         }
 
         $this->documentRepo->delete($document);

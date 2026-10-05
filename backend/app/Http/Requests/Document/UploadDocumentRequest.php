@@ -23,7 +23,7 @@ class UploadDocumentRequest extends FormRequest
                 'max:10240',                      // 10 MB
                 'mimes:pdf,jpg,jpeg,png,tiff,webp', // Cloudinary + OCR supported types
             ],
-            'expiry_date' => ['nullable', 'date', 'after:today'],
+            'expiry_date' => ['nullable', 'date'],
         ];
     }
 
@@ -33,7 +33,6 @@ class UploadDocumentRequest extends FormRequest
             'file.max'   => 'File must not exceed 10 MB.',
             'file.mimes' => 'Only PDF, JPG, PNG, TIFF, and WebP files are allowed.',
             'category.in'=> 'Category must be one of: ' . implode(', ', Document::CATEGORIES) . '.',
-            'expiry_date.after' => 'Expiry date must be a future date.',
         ];
     }
 }

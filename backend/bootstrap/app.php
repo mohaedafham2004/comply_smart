@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Middleware\AuditLogger;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -38,10 +38,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register middleware aliases
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
+            'auth' => Authenticate::class,
         ]);
 
-        // Sanctum stateful middleware for the api group (enables SPA auth + cookie sessions)
-        $middleware->statefulApi();
+        // API authentication uses JWT bearer tokens, not browser session cookies.
+        // Do not apply Sanctum's stateful SPA middleware here: it enables CSRF
+        // validation for API mutations and rejects our stateless token requests.
 
         // Append global rate limiting and AuditLogger to the api group
         $middleware->appendToGroup('api', 'throttle:api');
@@ -65,4 +67,3 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
     })->create();
-

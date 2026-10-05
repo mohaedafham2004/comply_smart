@@ -4,35 +4,34 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes — ComplySmart Application Views
+| Web Routes — ComplySmart API Service
 |--------------------------------------------------------------------------
+|
+| The ComplySmart frontend is decoupled and runs on Vite (port 5173).
+| Web requests directly to backend port 8000 return API status information.
+|
 */
 
-// ── Main Page Routes ────────────────────────────────-----------------------
-Route::get('/',                 fn () => view('pages.welcome'));
-Route::get('/welcome',          fn () => view('pages.welcome'));
-Route::get('/login',            fn () => view('pages.login'));
-Route::get('/register',         fn () => view('pages.register'));
-Route::get('/dashboard',        fn () => view('pages.dashboard'));
-Route::get('/profile',          fn () => view('pages.profile'));
-Route::get('/documents',        fn () => view('pages.documents'));
-Route::get('/documents/upload', fn () => view('pages.upload_document'));
-Route::get('/documents/details',fn () => view('pages.document_details'));
-Route::get('/tasks',            fn () => view('pages.tasks'));
-Route::get('/renewals',         fn () => view('test.renewals'));
-Route::get('/notifications',    fn () => view('test.notifications'));
-Route::get('/ai',               fn () => view('test.ai'));
-Route::get('/reports',          fn () => view('test.reports'));
+Route::get('/', fn () => response()->json([
+    'service' => 'ComplySmart Backend API',
+    'status' => 'online',
+    'version' => '1.0',
+    'frontend' => 'http://localhost:5173',
+    'documentation' => [
+        'ping' => '/api/v1/ping',
+        'auth_login' => '/api/v1/auth/login',
+        'auth_register' => '/api/v1/auth/register',
+        'business' => '/api/v1/business',
+        'documents' => '/api/v1/documents',
+        'tasks' => '/api/v1/tasks',
+        'renewals' => '/api/v1/renewals',
+        'notifications' => '/api/v1/notifications',
+        'ai' => '/api/v1/ai/chat',
+        'reports' => '/api/v1/reports/overview'
+    ]
+]));
 
-// ── Legacy / Test Frontend Routes ─────────────────────────────────────────
-Route::prefix('test')->group(function () {
-    Route::get('/',               fn () => view('pages.dashboard'));
-    Route::get('/auth',           fn () => view('pages.login'));
-    Route::get('/businesses',     fn () => view('pages.profile'));
-    Route::get('/documents',      fn () => view('pages.documents'));
-    Route::get('/tasks',          fn () => view('pages.tasks'));
-    Route::get('/renewals',       fn () => view('test.renewals'));
-    Route::get('/notifications',  fn () => view('test.notifications'));
-    Route::get('/ai',             fn () => view('test.ai'));
-    Route::get('/reports',        fn () => view('test.reports'));
-});
+Route::fallback(fn () => response()->json([
+    'error' => 'Not Found',
+    'message' => 'This is the ComplySmart Backend API. Frontend is served at http://localhost:5173'
+], 404));

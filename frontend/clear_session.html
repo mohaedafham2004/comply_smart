@@ -7,7 +7,8 @@
 </head>
 <body class="min-h-screen bg-slate-900 flex items-center justify-center">
     <div class="text-center space-y-4">
-        <div id="msg" class="text-white text-lg font-bold">Clearing saved credentials...</div>
+        <div id="icon" class="text-5xl">🔄</div>
+        <div id="msg" class="text-white text-xl font-bold">Clearing saved credentials...</div>
         <div class="text-slate-400 text-sm" id="sub">Please wait...</div>
     </div>
 
@@ -24,14 +25,14 @@
         // Clear sessionStorage too
         sessionStorage.clear();
 
-        document.getElementById('msg').textContent = '✓ All credentials cleared!';
-        document.getElementById('sub').textContent = 'Redirecting to login...';
+        document.getElementById('icon').textContent = '✅';
+        document.getElementById('msg').textContent = 'All credentials cleared!';
+        document.getElementById('sub').textContent = 'Redirecting to login page...';
 
-        // Redirect to login after 1.5 seconds
+        // Redirect to login after 1.5 seconds with cache bust
         setTimeout(() => {
-            window.location.href = '/login.html';
+            window.location.replace('/login.html?fresh=1');
         }, 1500);
     </script>
 </body>
 </html>
-

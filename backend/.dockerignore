@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Tests & dev docs
+tests/
+README.md
+*.md
+
+# Node (not needed in PHP backend image)
+node_modules/
+
+# Local vendor - will be installed fresh in container
+# vendor/
+
+# Storage (will be managed by app)
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Temporary / cache
+*.cache
+*.tmp
+bootstrap/cache/*.php

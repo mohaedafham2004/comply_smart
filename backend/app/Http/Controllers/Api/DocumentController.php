@@ -32,7 +32,15 @@ class DocumentController extends Controller
             $perPage = $request->integer('per_page', 15);
             $docs    = $this->documentService->listForUser($request->user(), $filters, $perPage);
 
-            return response()->json(['data' => $docs]);
+            return response()->json([
+                'data'       => $docs->items(),
+                'pagination' => [
+                    'current_page' => $docs->currentPage(),
+                    'last_page'    => $docs->lastPage(),
+                    'per_page'     => $docs->perPage(),
+                    'total'        => $docs->total(),
+                ],
+            ]);
         } catch (\RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         } catch (AuthorizationException $e) {
@@ -74,6 +82,9 @@ class DocumentController extends Controller
 
         } catch (AuthorizationException $e) {
             return response()->json(['message' => $e->getMessage()], 403);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Document upload error: ' . $e->getMessage());
+            return response()->json(['message' => 'Upload failed: ' . $e->getMessage()], 500);
         }
     }
 

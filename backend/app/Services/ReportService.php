@@ -56,8 +56,8 @@ class ReportService
         $scoreData = $this->businessService->getComplianceScore($user);
 
         // Compliance Score Trend (simulated historical snapshot / status weighting)
-        $taskCompletionRate    = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 1) : 100.0;
-        $renewalCompletionRate = $totalRenewals > 0 ? round(($completedRenew / $totalRenewals) * 100, 1) : 100.0;
+        $taskCompletionRate    = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 1) : null;
+        $renewalCompletionRate = $totalRenewals > 0 ? round(($completedRenew / $totalRenewals) * 100, 1) : null;
 
         return [
             'business' => [
@@ -68,6 +68,7 @@ class ReportService
             ],
             'compliance_score_trend' => [
                 'current_score'          => $scoreData['compliance_score'],
+                'has_compliance_data'    => $scoreData['has_compliance_data'],
                 'tasks_component_score'  => $scoreData['score_breakdown']['tasks_score'],
                 'renewals_component_score'=> $scoreData['score_breakdown']['renewals_score'],
                 'task_completion_rate'   => $taskCompletionRate,

@@ -49,7 +49,7 @@ class ExtractOcrTextJob implements ShouldQueue
         $tempOutput = null;
 
         try {
-            // ── 1. Download from Cloudinary ───────────────────────────────────
+            // ── 1. Read file (from local disk or Cloudinary URL) ─────────────
             $tempInput = tempnam(sys_get_temp_dir(), 'complysmart_ocr_in_');
 
             // Add correct extension so Tesseract knows the type
@@ -59,9 +59,21 @@ class ExtractOcrTextJob implements ShouldQueue
                 $tempInput .= $ext;
             }
 
-            $fileContent = @file_get_contents($document->cloudinary_url);
+            $fileContent = false;
+            if (str_starts_with($document->cloudinary_public_id ?? '', 'local:')) {
+                $localPath = substr($document->cloudinary_public_id, 6);
+                $fullPath  = storage_path("app/public/{$localPath}");
+                if (file_exists($fullPath)) {
+                    $fileContent = file_get_contents($fullPath);
+                }
+            }
+
             if ($fileContent === false) {
-                throw new \RuntimeException("Failed to download file from Cloudinary: {$document->cloudinary_url}");
+                $fileContent = @file_get_contents($document->cloudinary_url);
+            }
+
+            if ($fileContent === false) {
+                throw new \RuntimeException("Failed to read document file: {$document->cloudinary_url}");
             }
             file_put_contents($tempInput, $fileContent);
 
@@ -97,8 +109,9 @@ class ExtractOcrTextJob implements ShouldQueue
             Log::error("ExtractOcrTextJob failed [{$this->documentId}]: " . $e->getMessage());
             $documentService->updateOcrResult($this->documentId, $e->getMessage(), false);
 
-            // Re-throw so the queue driver retries
-            throw $e;
+            // Do NOT re-throw — OCR failure must never block or fail the document upload.
+            // The document is already saved in MongoDB. OCR status is marked 'failed'.
+            // A future manual retry or re-upload can re-trigger OCR.
         } finally {
             // Always clean up temp files
             if ($tempInput && file_exists($tempInput)) @unlink($tempInput);

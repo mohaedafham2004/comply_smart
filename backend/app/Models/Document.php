@@ -24,6 +24,8 @@ class Document extends Model
     const CATEGORIES = [
         'license', 'certificate', 'permit', 'contract',
         'tax', 'insurance', 'registration', 'other',
+        // Additional categories used by the frontend upload form
+        'labor', 'health_safety', 'financial', 'general',
     ];
 
     protected $fillable = [

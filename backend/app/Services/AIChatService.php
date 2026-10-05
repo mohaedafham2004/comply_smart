@@ -248,10 +248,22 @@ PROMPT;
 
         try {
             $response = Http::withoutVerifying()
+                ->withOptions(['curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4]])
                 ->withQueryParameters(['key' => $this->apiKey])
                 ->timeout($this->timeout)
                 ->acceptJson()
                 ->post($url, $body);
+
+            // Automatic fallback to gemini-1.5-flash if primary model fails
+            if ($response->failed() && $this->model !== self::DEFAULT_MODEL) {
+                $fallbackUrl = self::BASE_URL . '/' . self::DEFAULT_MODEL . $endpoint;
+                $response = Http::withoutVerifying()
+                    ->withOptions(['curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4]])
+                    ->withQueryParameters(['key' => $this->apiKey])
+                    ->timeout($this->timeout)
+                    ->acceptJson()
+                    ->post($fallbackUrl, $body);
+            }
 
             if ($response->failed()) {
                 $errorBody = $response->json();

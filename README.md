@@ -57,8 +57,8 @@ complysmart/
 
 ### Frontend Configuration (`/frontend/.env`)
 ```env
-# URL pointing to the running backend API
-VITE_API_URL=http://localhost:8000/api/v1
+# API route; Vite development proxies relative `/api` requests to Laravel
+VITE_API_URL=/api/v1
 ```
 
 ### Backend Configuration (`/backend/.env`)
@@ -103,7 +103,7 @@ composer install
 php artisan serve --port=8000
 ```
 > The API server will run at: `http://localhost:8000/api/v1`  
-> Test ping endpoint: `http://localhost:8000/api/v1/ping`
+> Test ping endpoint: `http://localhost:8000/api/v1/ping`. The Vite frontend proxies `/api` to this backend; the Docker build uses `http://localhost:8000/api/v1` from the browser.
 
 ---
 

@@ -30,7 +30,8 @@ class TaskService
             'title'       => $data['title'],
             'description' => $data['description'] ?? null,
             'category'    => $data['category']    ?? 'general',
-            'due_date'    => $data['due_date']    ?? null,
+            'priority'    => $data['priority']    ?? Task::PRIORITY_MEDIUM,
+            'due_date'    => !empty($data['due_date']) ? $data['due_date'] : null,
             'status'      => Task::STATUS_PENDING,
             'assigned_to' => $data['assigned_to'] ?? null,
         ]);
@@ -89,7 +90,7 @@ class TaskService
         $task = $this->findForUser($actor, $id);
 
         $allowed = array_intersect_key($data, array_flip([
-            'title', 'description', 'category', 'due_date', 'assigned_to',
+            'title', 'description', 'category', 'priority', 'due_date', 'assigned_to',
         ]));
 
         $this->taskRepo->update($task, $allowed);

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Renewals Tracker — ComplySmart</title>
+    
+    <script>
+        (function() {
+            var t = localStorage.getItem('cs_theme') || 'light';
+            if (t === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="/api-global.js"></script>
+
+        <style>
+        [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        html.dark, html.dark body { background-color: #000000 !important; color: #f4f4f5 !important; color-scheme: dark; }
+        html.light, html.light body { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-hanken { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-card { background: #ffffff; backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.1); }
+        .dark .glass-card { background: #09090b; backdrop-filter: blur(16px); border: 1px solid #27272a; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.8); }
+        .brand-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dark .brand-gradient { background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-active { border-left: 4px solid #4f46e5; background: rgba(79, 70, 229, 0.08); font-weight: 700; color: #4f46e5; }
+        .dark .sidebar-active { border-left: 4px solid #ffffff; background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        html.light select option { background-color: #ffffff; color: #0f172a; }
+        html.dark select option { background-color: #18181b; color: #f4f4f5; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-black text-slate-800 dark:text-zinc-100 antialiased" x-data="renewalsPage()" x-init="initRenewals()">
+
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 w-full flex justify-between items-center px-6 bg-white/95 dark:bg-black/95 border-b border-slate-200/80 dark:border-zinc-800 z-50 h-16 backdrop-blur-md">
+        <div class="flex items-center gap-6">
+            <a href="/dashboard.html" class="font-hanken font-extrabold text-xl text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <span>Comply<span class="brand-gradient">Smart</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button @click="toggleTheme()" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl text-amber-500 dark:text-zinc-300" x-text="theme === 'dark' ? 'dark_mode' : 'light_mode'"></span>
+            </button>
+            <a href="/notifications.html" class="p-2.5 hover:bg-slate-100 dark:hover:bg-zinc-900 rounded-full text-slate-600 dark:text-zinc-300">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:border-zinc-800 mx-1"></div>
+            <button @click="logout()" title="Logout" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+                <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- App Body -->
+    <div class="flex-1 flex overflow-hidden pt-16">
+
+        <!-- SideNavBar -->
+        <aside class="fixed left-0 top-0 h-full flex flex-col pt-20 pb-6 w-[260px] z-40 bg-white/95 border-r border-slate-200/80 dark:bg-black/95 dark:border-zinc-800 hidden md:flex">
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+                <a href="/dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    <span class="truncate">Dashboard</span>
+                </a>
+                <a href="/profile.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">business_center</span>
+                    <span class="truncate">Business Profile</span>
+                </a>
+                <a href="/documents.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">description</span>
+                    <span class="truncate">Document Vault</span>
+                </a>
+                <a href="/upload_document.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-emerald-600 dark:text-emerald-400">cloud_upload</span>
+                    <span class="truncate">Upload Document</span>
+                </a>
+                <a href="/tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">assignment</span>
+                    <span class="truncate">Compliance Tasks</span>
+                </a>
+                <a href="/renewals.html" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl text-xs w-full font-medium">
+                    <span class="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">event_repeat</span>
+                    <span class="truncate">Renewals Tracker</span>
+                </a>
+                <a href="/ai.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg text-purple-600 dark:text-purple-400">smart_toy</span>
+                    <span class="truncate">AI Assistant</span>
+                </a>
+                <a href="/reports.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">analytics</span>
+                    <span class="truncate">Analytics & Reports</span>
+                </a>
+                <a href="/notifications.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="truncate">Notifications</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 md:ml-[260px] p-6 md:p-8 overflow-y-auto bg-slate-50 dark:bg-black">
+            <div class="max-w-5xl mx-auto space-y-6">
+
+                <!-- Top Header Bar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="font-hanken text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">License & Permit Renewal Tracker</h1>
+                        <p class="text-xs text-slate-500 dark:text-zinc-400">Track EPF/ETF returns, trade permits, and statutory renewal deadlines for Sri Lankan SMEs</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button @click="showModal = true" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">add</span>
+                            <span>New Renewal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Renewals List -->
+                <div x-show="renewals.length > 0" class="space-y-3">
+                    <template x-for="r in renewals" :key="r._id || r.id || r.title">
+                        <div class="glass-card p-4 sm:p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-amber-500">
+                            <div class="space-y-1.5 min-w-0 flex-1">
+                                <div class="flex items-center gap-3">
+                                    <h3 class="font-hanken font-bold text-sm text-slate-900 dark:text-white truncate" x-text="r.title"></h3>
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-amber-500/20 text-amber-700 dark:text-amber-300" x-text="r.renewal_type?.replace('_',' ')"></span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-zinc-400">
+                                    <span x-text="'Authority: ' + (r.authority || 'Sri Lankan Government Authority')"></span>
+                                    <span>•</span>
+                                    <span class="font-mono text-amber-600 dark:text-amber-400 font-semibold" x-text="r.due_date ? 'Due: ' + new Date(r.due_date).toLocaleDateString('en-GB') : 'No due date'"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button @click="deleteRenewal(r._id || r.id)" title="Delete" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="renewals.length === 0" class="glass-card p-12 rounded-3xl text-center space-y-4">
+                    <div class="w-16 h-16 rounded-3xl bg-amber-500/10 text-amber-600 dark:bg-zinc-800 dark:text-zinc-300 flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-3xl">event_repeat</span>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-hanken font-bold text-base text-slate-900 dark:text-white">No Renewals Being Tracked</h3>
+                        <p class="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto">Record your business trade licenses, tax filing periods, EPF/ETF returns, or environmental permits to get automatic renewal alerts.</p>
+                    </div>
+                    <div>
+                        <button @click="showModal = true" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition shadow-md">
+                            <span class="material-symbols-outlined text-base">add</span>
+                            <span>Record First Renewal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Create Renewal Modal -->
+                <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-cloak>
+                    <div class="glass-card max-w-md w-full rounded-3xl p-6 space-y-4" @click.away="showModal = false">
+                        <div class="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+                            <h3 class="font-hanken font-bold text-base text-slate-900 dark:text-white">Record Statutory Renewal</h3>
+                            <button @click="showModal = false" class="text-slate-400 hover:text-slate-600">
+                                <span class="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+
+                        <form @submit.prevent="createRenewal()" class="space-y-4">
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Renewal Title *</label>
+                                <input x-model="newRenewal.title" type="text" required placeholder="e.g. Annual Trade License Renewal"
+                                    class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Type *</label>
+                                    <select x-model="newRenewal.renewal_type" required
+                                        class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                                        <option value="license">Trade License</option>
+                                        <option value="tax">Tax / TIN</option>
+                                        <option value="labor">EPF & ETF Return</option>
+                                        <option value="permit">Environmental Permit</option>
+                                        <option value="other">General</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Due Date *</label>
+                                    <input x-model="newRenewal.due_date" type="date" required
+                                        class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-slate-700 dark:text-zinc-300">Issuing Authority</label>
+                                <input x-model="newRenewal.authority" type="text" placeholder="e.g. Colombo Municipal Council, IRD, Central Bank"
+                                    class="w-full bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+
+                            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition">
+                                Save Renewal Reminder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function themeManager() {
+    return {
+        theme: localStorage.getItem('cs_theme') || 'light',
+        toggleTheme() {
+            this.theme = this.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('cs_theme', this.theme);
+            if (this.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    };
+}
+
+function renewalsPage() {
+    return {
+        ...themeManager(),
+        token: localStorage.getItem('cs_token') || '',
+        renewals: [],
+        showModal: false,
+        newRenewal: { title: '', renewal_type: 'license', due_date: '', authority: '' },
+
+        async initRenewals() {
+            if (this.token) {
+                const res = await window.api('GET', '/renewals');
+                if (res.ok && res.data.data) {
+                    this.renewals = res.data.data;
+                }
+            }
+        },
+
+        async createRenewal() {
+            if (this.token) {
+                const res = await window.api('POST', '/renewals', this.newRenewal);
+                if (res.ok) {
+                    await this.initRenewals();
+                    this.showModal = false;
+                    this.newRenewal = { title: '', renewal_type: 'license', due_date: '', authority: '' };
+                    return;
+                }
+            }
+            this.demoRenewals.unshift({
+                _id: 'demo-' + Date.now(),
+                ...this.newRenewal
+            });
+            this.showModal = false;
+            this.newRenewal = { title: '', renewal_type: 'license', due_date: '', authority: '' };
+        },
+
+        async deleteRenewal(id) {
+            if (this.token && id && !id.startsWith('demo')) {
+                if (!confirm('Are you sure you want to delete this renewal?')) return;
+                await window.api('DELETE', `/renewals/${id}`);
+                await this.initRenewals();
+            } else {
+                this.demoRenewals = this.demoRenewals.filter(r => r._id !== id);
+            }
+        },
+
+        logout() {
+            if (window.logout) window.logout();
+            else {
+                localStorage.removeItem('cs_token');
+                window.location.href = '/login.html';
+            }
+        }
+    };
+}
+</script>
+</body>
+</html>
