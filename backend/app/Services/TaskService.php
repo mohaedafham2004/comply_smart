@@ -25,6 +25,11 @@ class TaskService
     {
         $businessId = $this->requireBusinessId($actor);
 
+        $dueDate = !empty($data['due_date']) ? \Carbon\Carbon::parse($data['due_date']) : null;
+        $initialStatus = ($dueDate && $dueDate->startOfDay()->lt(now()->startOfDay()))
+            ? Task::STATUS_OVERDUE
+            : Task::STATUS_PENDING;
+
         $task = $this->taskRepo->create([
             'business_id' => $businessId,
             'title'       => $data['title'],
@@ -32,7 +37,7 @@ class TaskService
             'category'    => $data['category']    ?? 'general',
             'priority'    => $data['priority']    ?? Task::PRIORITY_MEDIUM,
             'due_date'    => !empty($data['due_date']) ? $data['due_date'] : null,
-            'status'      => Task::STATUS_PENDING,
+            'status'      => $initialStatus,
             'assigned_to' => $data['assigned_to'] ?? null,
         ]);
 
@@ -53,7 +58,25 @@ class TaskService
     public function listForUser(User $actor, array $filters = []): Collection
     {
         $businessId = $this->requireBusinessId($actor);
+        $this->syncOverdueForBusiness($businessId);
         return $this->taskRepo->findByBusiness($businessId, $filters);
+    }
+
+    /**
+     * Sync overdue status for all non-completed tasks of a business whose due_date has passed.
+     */
+    public function syncOverdueForBusiness(string $businessId): void
+    {
+        $tasks = Task::where('business_id', $businessId)
+            ->whereIn('status', [Task::STATUS_PENDING, Task::STATUS_IN_PROGRESS])
+            ->get();
+
+        $today = now()->startOfDay();
+        foreach ($tasks as $t) {
+            if ($t->due_date && \Carbon\Carbon::parse($t->due_date)->startOfDay()->lt($today)) {
+                $t->update(['status' => Task::STATUS_OVERDUE]);
+            }
+        }
     }
 
     // ─── Show ─────────────────────────────────────────────────────────────────
@@ -92,6 +115,17 @@ class TaskService
         $allowed = array_intersect_key($data, array_flip([
             'title', 'description', 'category', 'priority', 'due_date', 'assigned_to',
         ]));
+
+        if (array_key_exists('due_date', $allowed) && $task->status !== Task::STATUS_COMPLETED) {
+            if (!empty($allowed['due_date'])) {
+                $newDue = \Carbon\Carbon::parse($allowed['due_date'])->startOfDay();
+                if ($newDue->lt(now()->startOfDay())) {
+                    $allowed['status'] = Task::STATUS_OVERDUE;
+                } elseif ($task->status === Task::STATUS_OVERDUE) {
+                    $allowed['status'] = Task::STATUS_PENDING;
+                }
+            }
+        }
 
         $this->taskRepo->update($task, $allowed);
         $task->refresh();

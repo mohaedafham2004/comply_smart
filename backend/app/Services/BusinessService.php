@@ -129,6 +129,7 @@ class BusinessService
     public function recalculateComplianceScore(Business $business): ?float
     {
         $businessId = (string) $business->_id;
+        $this->syncOverdueItems($businessId);
 
         // Tasks component
         $tasks          = \App\Models\Task::where('business_id', $businessId)->get();
@@ -163,12 +164,41 @@ class BusinessService
     }
 
     /**
+     * Automatically mark any non-completed tasks and renewals with past due_date as overdue.
+     */
+    private function syncOverdueItems(string $businessId): void
+    {
+        $today = now()->startOfDay();
+
+        $tasks = \App\Models\Task::where('business_id', $businessId)
+            ->whereIn('status', [\App\Models\Task::STATUS_PENDING, \App\Models\Task::STATUS_IN_PROGRESS])
+            ->get();
+        foreach ($tasks as $t) {
+            if ($t->due_date && \Carbon\Carbon::parse($t->due_date)->startOfDay()->lt($today)) {
+                $t->update(['status' => \App\Models\Task::STATUS_OVERDUE]);
+            }
+        }
+
+        $renewals = \App\Models\Renewal::where('business_id', $businessId)
+            ->whereIn('status', [\App\Models\Renewal::STATUS_UPCOMING, \App\Models\Renewal::STATUS_DUE])
+            ->get();
+        foreach ($renewals as $r) {
+            if ($r->due_date && \Carbon\Carbon::parse($r->due_date)->startOfDay()->lt($today)) {
+                $r->update(['status' => \App\Models\Renewal::STATUS_OVERDUE]);
+            }
+        }
+    }
+
+    /**
      * Return full compliance breakdown for the GET /api/v1/business/compliance-score endpoint.
      */
     public function getComplianceScore(User $user): array
     {
         $business   = $this->getForUser($user);
         $businessId = (string) $business->_id;
+
+        // Score (also syncs overdue statuses in DB first)
+        $score = $this->recalculateComplianceScore($business);
 
         // Tasks
         $tasks          = \App\Models\Task::where('business_id', $businessId)->get();
@@ -189,9 +219,6 @@ class BusinessService
             ->where('due_date', '<=', now()->addDays(30))
             ->where('status', '!=', \App\Models\Renewal::STATUS_COMPLETED)
             ->count();
-
-        // Score
-        $score = $this->recalculateComplianceScore($business);
 
         return [
             'compliance_score' => $score,

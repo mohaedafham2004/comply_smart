@@ -23,6 +23,9 @@ class ReportService
         $business   = $this->businessService->getForUser($user);
         $businessId = (string) $business->_id;
 
+        // Live Compliance Score (also syncs overdue statuses for tasks and renewals)
+        $scoreData = $this->businessService->getComplianceScore($user);
+
         // Documents
         $totalDocuments = Document::where('business_id', $businessId)->count();
         $expiringDocs   = Document::where('business_id', $businessId)
@@ -51,9 +54,6 @@ class ReportService
             ->count();
         $overdueRenewals = $renewals->where('status', Renewal::STATUS_OVERDUE)->count();
         $completedRenew  = $renewals->where('status', Renewal::STATUS_COMPLETED)->count();
-
-        // Live Compliance Score
-        $scoreData = $this->businessService->getComplianceScore($user);
 
         // Compliance Score Trend (simulated historical snapshot / status weighting)
         $taskCompletionRate    = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 1) : null;

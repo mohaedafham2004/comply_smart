@@ -24,13 +24,18 @@ class RenewalService
     {
         $businessId = $this->requireBusinessId($actor);
 
+        $dueDate = !empty($data['due_date']) ? \Carbon\Carbon::parse($data['due_date']) : null;
+        $initialStatus = ($dueDate && $dueDate->startOfDay()->lt(now()->startOfDay()))
+            ? Renewal::STATUS_OVERDUE
+            : Renewal::STATUS_UPCOMING;
+
         $renewal = $this->renewalRepo->create([
             'business_id'  => $businessId,
             'document_id'  => $data['document_id']  ?? null,
             'title'        => $data['title'],
             'renewal_type' => $data['renewal_type'],
             'due_date'     => $data['due_date'],
-            'status'       => Renewal::STATUS_UPCOMING,
+            'status'       => $initialStatus,
             'notes'        => $data['notes'] ?? null,
         ]);
 
@@ -50,7 +55,25 @@ class RenewalService
     public function listForUser(User $actor, array $filters = []): Collection
     {
         $businessId = $this->requireBusinessId($actor);
+        $this->syncOverdueForBusiness($businessId);
         return $this->renewalRepo->findByBusiness($businessId, $filters);
+    }
+
+    /**
+     * Sync overdue status for all non-completed renewals of a business whose due_date has passed.
+     */
+    public function syncOverdueForBusiness(string $businessId): void
+    {
+        $renewals = Renewal::where('business_id', $businessId)
+            ->whereIn('status', [Renewal::STATUS_UPCOMING, Renewal::STATUS_DUE])
+            ->get();
+
+        $today = now()->startOfDay();
+        foreach ($renewals as $r) {
+            if ($r->due_date && \Carbon\Carbon::parse($r->due_date)->startOfDay()->lt($today)) {
+                $r->update(['status' => Renewal::STATUS_OVERDUE]);
+            }
+        }
     }
 
     /**
@@ -59,6 +82,7 @@ class RenewalService
     public function upcomingForUser(User $actor, int $days = 30): Collection
     {
         $businessId = $this->requireBusinessId($actor);
+        $this->syncOverdueForBusiness($businessId);
         return $this->renewalRepo->findUpcomingForBusiness($businessId, $days);
     }
 
